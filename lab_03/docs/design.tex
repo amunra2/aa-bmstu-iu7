@@ -1,0 +1,109 @@
+\chapter{Конструкторская часть}
+В данном разделе будут рассмотрены схемы алгоритмов сортировок (вставками, перемешиванием и гномья), а также найдена их трудоемкость
+
+\section{Разработка алгоритмов}
+На рисунках 2.1, 2.2 и 2.3 представлены схемы алгоритмов сортировки - ставками, перемешиванием и гномья
+
+\img{170mm}{insert_scheme.png}{Схема алгоритма сортировки вставками}
+\img{220mm}{shaker_scheme1.png}{Схема алгоритма сортировки перемешиванием - 1}
+\img{220mm}{shaker_scheme2.png}{Схема алгоритма сортировки перемешиванием - 2}
+\img{220mm}{gnome_scheme.png}{Схема алгоритма гномьей сортировки}
+
+\clearpage
+
+\section{Модель вычислений для проведения оценки трудоемкости}
+Введем модель вычислений, которая потребуется для определния трудоемкости каждого отдельно взятого алгоритма сортировки:
+
+\begin{enumerate}
+	\item операции из списка (\ref{for:operations}) имеют трудоемкость равную 1;
+	\begin{equation}
+		\label{for:operations}
+		+, -, /, *, \%, =, +=, -=, *=, /=, \%=, ==, !=, <, >, <=, >=, [], ++, {-}-
+	\end{equation}
+	\item трудоемкость оператора выбора \code{if условие then A else B} рассчитывается, как (\ref{for:if});
+	\begin{equation}
+		\label{for:if}
+		f_{if} = f_{\text{условия}} +
+		\begin{cases}
+			f_A, & \text{если условие выполняется,}\\
+			f_B, & \text{иначе.}
+		\end{cases}
+	\end{equation}
+	\item трудоемкость цикла рассчитывается, как (\ref{for:cycle});
+	\begin{equation}
+		\label{for:cycle}
+		f_{for} = f_{\text{инициализации}} + f_{\text{сравнения}} + N(f_{\text{тела}} + f_{\text{инкремент}} + f_{\text{сравнения}})
+	\end{equation}
+	\item трудоемкость вызова функции равна 0.
+\end{enumerate}
+
+
+\section{Трудоёмкость алгоритмов}
+
+\subsection{Алгоритм сортировки перемешиванием}
+
+\begin{itemize}
+	\item Трудоёмкость сравнения внешнего цикла $while(swap == True)$, которая равна (\ref{for:outer_cycle}):
+	\begin{equation}
+		\label{for:outer_cycle}
+		f_{outer} = 1 + 2 \cdot (N - 1)
+	\end{equation}
+	\item Суммарная трудоёмкость внутренних циклов, количество итераций которых меняется в промежутке $[1..N-1]$, которая равна (\ref{for:bubble_inner}):
+	\begin{equation}
+		\label{for:bubble_inner}
+		f_{inner} = 5(N - 1) + \frac{2 \cdot (N - 1)}{2} \cdot (3 + f_{if})
+	\end{equation}
+	\item Трудоёмкость условия во внутреннем цикле, которая равна (\ref{for:bubble_if}):
+	\begin{equation}
+		\label{for:bubble_if}
+		f_{if} = 4 + \begin{cases}
+			0, & \text{л.с.}\\
+			9, & \text{х.с.}\\
+		\end{cases}
+	\end{equation}
+\end{itemize}
+
+Трудоёмкость в лучшем случае (\ref{for:shaker_best}):
+\begin{equation}
+	\label{for:shaker_best}
+	f_{best} = -3 + \frac{3}{2} N \approx \frac{3}{2} N = O(N)
+\end{equation}
+
+Трудоёмкость в худшем случае (\ref{for:shaker_worst}):
+\begin{equation}
+	\label{for:shaker_worst}
+	f_{worst} = -3 - 8N + 8N^2 \approx 8N^2 = O(N^2)
+\end{equation}
+
+
+\subsection{Алгоритм гномьей сортировки}
+
+Трудоёмкость в лучшем случае (при уже отсортированном массиве) (\ref{for:gnome_best}):
+\begin{equation}
+	\label{for:gnome_best}
+    f_{best} = 1 + N(4 + 1) = 5N + 1 = O(N)
+	% f_{best} = -3 + \frac{3}{2} N + \approx \frac{3}{2} N = O(N)
+\end{equation}
+
+Трудоёмкость в худшем случае (при массиве, отсортированном в обратном порядке) (\ref{for:gnome_worst}):
+\begin{equation}
+	\label{for:gnome_worst}
+    f_{worst} = 1 + N(4 + (N - 1) * (7 + 1 + 2)) = 10N^2 - 6N + 1 = O(N^2)
+	% f_{worst} = -3 - 8N + 8N^2 \approx 8N^2 = O(N^2)
+\end{equation}
+
+
+\subsection{Алгоритм сортировки вставками}
+Трудоемкость данного алгоритма может быть рассчитана с использованием той же модели подсчета трудоемкости.
+
+Трудоемкость алгоритма сортировки вставками:
+\begin{itemize}
+	\item в лучщем случае - $O(N)$
+    \item в худшем случае - $O(N^2)$ \newline
+\end{itemize}
+
+
+
+\section*{Вывод}
+
+Были разработаны схемы всех трех алгоритмов сортировки. Также для каждого из них были рассчитаны и оценены лучшие и худшие случаи.
