@@ -13,3 +13,11 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# Latex
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
