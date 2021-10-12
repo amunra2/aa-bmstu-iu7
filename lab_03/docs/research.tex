@@ -18,7 +18,7 @@
 
 На рисунке \ref{img:example} представлен результат работы программы.
 
-\img{60mm}{example}{Пример работы программы}
+\img{120mm}{example}{Пример работы программы}
 \clearpage
 
 \section{Время выполнения алгоритмов}
@@ -27,44 +27,49 @@
 
 Использовать функцию приходится дважды, затем из конечного времени нужно вычесть начальное, чтобы получить результат.
 
-Результаты замеров приведены в таблицах \ref{tbl:best}, \ref{tbl:worth} и \ref{tbl:random}.
+Результаты замеров времени работы алгоритмов сортировки на различных входных данных (в мс) приведены в таблицах \ref{tbl:best}, \ref{tbl:worth} и \ref{tbl:random}.
 
 \begin{table}[h]
 	\begin{center}
-		\caption{Время работы алгоритмов сортировки на отсортированных данных (мс)}
+		\begin{threeparttable}
+		\captionsetup{justification=raggedleft,singlelinecheck=off}
+		\caption{Отсортированные данные}
 		\label{tbl:best}
 		\begin{tabular}{|c|c|c|c|}
 			\hline
-			 Размер & Шейкером &  Вставками &  Гномья \\
+			Размер & Шейкером &  Вставками &  Гномья \\
 			\hline
 			100 & 0.0205 & 0.0346 & 0.0263 \\ 
 			\hline
-			 200 & 0.0368 & 0.0665 & 0.0507 \\ 
+			200 & 0.0368 & 0.0665 & 0.0507 \\ 
 			\hline
-			 300 & 0.0556 & 0.0648 & 0.0575 \\ 
+			300 & 0.0556 & 0.0648 & 0.0575 \\ 
 			\hline
-			 400 & 0.0474 & 0.0725 & 0.0546 \\ 
+			400 & 0.0474 & 0.0725 & 0.0546 \\ 
 			\hline
-			 500 & 0.0507 & 0.0931 & 0.0681 \\ 
+			500 & 0.0507 & 0.0931 & 0.0681 \\ 
 			\hline
-			 600 & 0.0600 & 0.1121 & 0.0820 \\ 
+			600 & 0.0600 & 0.1121 & 0.0820 \\ 
 			\hline
-			 700 & 0.0695 & 0.1305 & 0.0956 \\ 
+			700 & 0.0695 & 0.1305 & 0.0956 \\ 
 			\hline
-			 800 & 0.0801 & 0.1497 & 0.1148 \\ 
+			800 & 0.0801 & 0.1497 & 0.1148 \\ 
 			\hline
-			 900 & 0.0893 & 0.1671 & 0.1238 \\ 
+			900 & 0.0893 & 0.1671 & 0.1238 \\ 
 			\hline
 			1000 & 0.1018 & 0.1844 & 0.1391 \\ 
 			\hline
 		\end{tabular}
+		\end{threeparttable}
     \end{center}
 \end{table}
 
 
 \begin{table}[h]
 	\begin{center}
-		\caption{Время работы алгоритмов сортировки на отсортированных в обратном порядке данных (мс)}
+		\begin{threeparttable}
+		\captionsetup{justification=raggedleft,singlelinecheck=off}
+		\caption{Отсортированные в обратном порядке данные}
 		\label{tbl:worth}
 		\begin{tabular}{|c|c|c|c|}
 			\hline
@@ -91,13 +96,16 @@
 			1000 & 123.1786 & 77.9326 & 210.1529 \\ 
 			\hline
 		\end{tabular}
+		\end{threeparttable}
     \end{center}
 \end{table}
 
 
 \begin{table}[h]
 	\begin{center}
-		\caption{Время работы алгоритмов сортировки на случайных данных (мс)}
+		\begin{threeparttable}
+		\captionsetup{justification=raggedleft,singlelinecheck=off}
+		\caption{Случайные данные}
 		\label{tbl:random}
 		\begin{tabular}{|c|c|c|c|}
 			\hline
@@ -124,6 +132,7 @@
 			1000 & 74.5834 & 40.1647 & 107.6520 \\ 
 			\hline
 		\end{tabular}
+		\end{threeparttable}
     \end{center}
 \end{table}
 

@@ -4,11 +4,17 @@
 \usepackage[english,russian]{babel} % Языки: русский, английский
 \usepackage{enumitem}
 
+
+\usepackage{threeparttable}
+
 \usepackage[14pt]{extsizes}
 
 \usepackage{caption}
 \captionsetup{labelsep=endash}
 \captionsetup[figure]{name={Рисунок}}
+
+% \usepackage{ctable}
+% \captionsetup[table]{justification=raggedleft,singlelinecheck=off}
 
 \usepackage{amsmath}
 
@@ -41,7 +47,7 @@
 \usepackage{xcolor}
 
 % Для листинга кода:
-\lstset{ %
+\lstset{%
 	language=python,   					% выбор языка для подсветки	
 	basicstyle=\small\sffamily,			% размер и начертание шрифта для подсветки кода
 	numbers=left,						% где поставить нумерацию строк (слева\справа)
@@ -56,6 +62,7 @@
 	escapeinside={\#*}{*)},				% если нужно добавить комментарии в коде
 	backgroundcolor=\color{white},
 }
+
 
 \usepackage{pgfplots}
 \usetikzlibrary{datavisualization}
@@ -79,3 +86,4 @@
 \usepackage{csvsimple}
 
 \newcommand{\code}[1]{\texttt{#1}}
+
