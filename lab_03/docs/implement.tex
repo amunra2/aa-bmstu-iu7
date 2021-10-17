@@ -1,15 +1,9 @@
 \chapter{Технологическая часть}
 
-\section{Требования к ПО}
-Ряд требований к программе:
-\begin{itemize}
-	\item на вход подается массив целых чисел 
-    \item отсортированный массив, который был задан в предыдущем пункте \newline
-\end{itemize}
-
+В данном разделе будут рассмотрены средства реализации, а также представлены листинги сортировок.
 
 \section{Средства реализации}
-В данной работе для реализации был выбран язык программирования $Python \cite{python-lang}$. Выбор обсуловлен желанием попрактиковать свои умения работы с даным ЯП. Также $Python$ предоставляет широкий выбор библиотек для комфортной работы.
+В данной работе для реализации был выбран язык программирования $Python \cite{python-lang}$. В текущей лабораторной работе требуется замерить процессорное время для выполняемой программы, а также построить графики. Все эти инструменты присутствуют в выбранном языке программирования.
 
 Время работы было замерено с помощью функции \textit{process\_time(...)} из библиотеки $time \cite{python-lang-time}$.
 
@@ -23,7 +17,50 @@
 
 \section{Листинги кода}
 
-В листингах \ref{lst:insert_sort}, \ref{lst:shaker_sort}, \ref{lst:gnomme_sort} представлены реализации алгоритмов сортировок (перемешиванием, вставками и гномьей).
+В листингах \ref{lst:shaker_sort}, \ref{lst:insert_sort}, \ref{lst:gnomme_sort} представлены реализации алгоритмов сортировок (перемешиванием, вставками и гномьей).
+
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{lstlisting}[label=lst:shaker_sort,caption=Алгоритм сортировки перемешиванием]
+        def shaker_sort(arr, n):
+    
+        left = 0
+        right = n - 1
+    
+        swapped = True
+    
+        while(swapped):
+            swapped = False
+    
+            for i in range(left, right):
+                if (arr[i] > arr[i + 1]):
+                    tmp = arr[i]
+                    arr[i] = arr[i + 1]
+                    arr[i + 1] = tmp
+    
+                    swapped = True
+    
+            if (swapped == False):
+                break
+    
+            swapped = False
+            right -= 1
+    
+            for i in range(right - 1, left - 1, -1):
+                if (arr[i] > arr[i + 1]):
+                    tmp = arr[i]
+                    arr[i] = arr[i + 1]
+                    arr[i + 1] = tmp
+    
+                    swapped = True
+    
+            left += 1
+    
+        return arr
+\end{lstlisting}
+\end{center}
+
+\clearpage
 
 \begin{center}
 \captionsetup{justification=raggedright,singlelinecheck=off}
@@ -43,49 +80,6 @@
     return arr
 \end{lstlisting}
 \end{center}
-
-
-\begin{center}
-\captionsetup{justification=raggedright,singlelinecheck=off}
-\begin{lstlisting}[label=lst:shaker_sort,caption=Алгоритм сортировки перемешиванием]
-    def shaker_sort(arr, n):
-
-    left = 0
-    right = n - 1
-
-    swapped = True
-
-    while(swapped):
-        swapped = False
-
-        for i in range(left, right):
-            if (arr[i] > arr[i + 1]):
-                tmp = arr[i]
-                arr[i] = arr[i + 1]
-                arr[i + 1] = tmp
-
-                swapped = True
-
-        if (swapped == False):
-            break
-
-        swapped = False
-        right -= 1
-
-        for i in range(right - 1, left - 1, -1):
-            if (arr[i] > arr[i + 1]):
-                tmp = arr[i]
-                arr[i] = arr[i + 1]
-                arr[i + 1] = tmp
-
-                swapped = True
-
-        left += 1
-
-    return arr
-\end{lstlisting}
-\end{center}
-
 
 
 \begin{center}
