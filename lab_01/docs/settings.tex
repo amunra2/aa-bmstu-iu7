@@ -69,7 +69,7 @@
 \usetikzlibrary{datavisualization.formats.functions}
 
 \usepackage{graphicx}
-\newcommand{\img}[3] {
+\newcommand{\imgScale}[3] {
 	\begin{figure}[h!]
 		\center{\includegraphics[scale=#1]{img/#2}} % height
 		\caption{#3}
@@ -77,6 +77,14 @@
 	\end{figure}
 }
 
+\usepackage{graphicx}
+\newcommand{\imgHeight}[3] {
+	\begin{figure}[h!]
+		\center{\includegraphics[height=#1]{img/#2}} % height
+		\caption{#3}
+		\label{img:#2}
+	\end{figure}
+}
 
 \usepackage[justification=centering]{caption} % Настройка подписей float объектов
 

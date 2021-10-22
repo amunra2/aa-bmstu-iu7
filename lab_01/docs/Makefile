@@ -23,7 +23,9 @@ check:
 	find . -name "*.tex" -exec aspell --lang=ru --mode=tex check "{}" \;
 
 clean:
-	echo "Coming soon..."
+	rm *.aux *.bbl *.blg *.log *.out *.toc *.tex.bak
+
+	echo "Clear:Ready"
 
 
 # Hanspell check 
