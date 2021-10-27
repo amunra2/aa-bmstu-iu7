@@ -10,13 +10,13 @@
 
 \section{Листинги кода}
 
-В листингах \ref{lst:lev_rec}, \ref{lst:lev_mat}, \ref{lst:lev_cach},  \ref{lst:dam_lev_rec} представлены реализации алгоритмов нахождения расстояния Левенштейна и Дамерау-Левенштейна.
+В листингах \ref{lst:lev_rec}-\ref{lst:dam_lev_rec} представлены реализации алгоритмов нахождения расстояния Левенштейна и Дамерау-Левенштейна.
 
 \clearpage
 
 \begin{center}
     \captionsetup{justification=raggedright,singlelinecheck=off}
-    \begin{lstlisting}[label=lst:lev_rec,caption=Алгоритм нахождения расстояния Левенштейна (реккурсивный)]
+    \begin{lstlisting}[label=lst:lev_rec,caption=Алгоритм нахождения расстояния Левенштейна (рекурсивный)]
 def levenstein_recursive(str1, str2):
     n = len(str1)
     m = len(str2)
@@ -107,7 +107,7 @@ def levenstein_cache_matrix(str1, str2):
 
 \begin{center}
     \captionsetup{justification=raggedright,singlelinecheck=off}
-    \begin{lstlisting}[label=lst:dam_lev_rec,caption=Алгоритм нахождения расстояния Дамерау-Левенштейна (реккурсивный)]
+    \begin{lstlisting}[label=lst:dam_lev_rec,caption=Алгоритм нахождения расстояния Дамерау-Левенштейна (рекурсивный)]
 def damerau_levenstein_recursive(str1, str2):
     n = len(str1)
     m = len(str2)
@@ -142,20 +142,10 @@ def damerau_levenstein_recursive(str1, str2):
 
 В таблице \ref{tbl:functional_test} приведены тесты для функций, реализующих алгоритмы нахождения расстояния Левенштейна и Дамерау-Левенштейна. Тесты \textit{для всех алгоритмов} пройдены успешно.
 
-Выделенные классы эквивалентности при тестировании:
-\begin{enumerate}
-    \item Ввод двух пустых строк (случай 1).
-    \item Одна из строк - пустая (случаи 2-3).
-    \item Расстояния, которые вычислены алгоритмами Левенштейна и Дамерау-Левенштейна, равны (случаи 4-10).
-    \item Расстояния, которые вычислены алгоритмами Левенштейна и Дамерау-Левенштейна, дают разные результаты (случаи 11-12).
-\end{enumerate}
-
-
-
 \begin{table}[h]
 	\begin{center}
         \begin{threeparttable}
-        \captionsetup{justification=raggedleft,singlelinecheck=off}
+        \captionsetup{justification=raggedright,singlelinecheck=off}
 		\caption{\label{tbl:functional_test} Функциональные тесты}
 		\begin{tabular}{|c|c|c|c|c|}
 			\hline
