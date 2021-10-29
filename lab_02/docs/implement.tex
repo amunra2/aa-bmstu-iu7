@@ -1,0 +1,94 @@
+\chapter{Технологическая часть}
+
+В данном разделе будут рассмотрены средства реализации, а также представлены листинги алгоритмов определения расстояния Левенштейна и Дамерау-Левенштейна.
+
+\section{Средства реализации}
+В данной работе для реализации был выбран язык программирования $Python \cite{python-lang}$. В текущей лабораторной работе требуется замерить процессорное время для выполняемой программы, а также построить графики. Все эти инструменты присутствуют в выбранном языке программирования.
+
+Время работы было замерено с помощью функции \textit{process\_time(...)} из библиотеки $time \cite{python-lang-time}$.
+
+
+\section{Листинги кода}
+
+В листингах \ref{lst:stand_alg}-\ref{lst:opt_vin_alg} представлены реализации алгоритмов умножения матриц - стандартного, Винограда и оптимизированного алгоритма Винограда.
+
+\clearpage
+
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{lstlisting}[label=lst:stand_alg,caption=Стандартный алгоритм умножения матриц]
+
+\end{lstlisting}
+\end{center}
+
+
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{lstlisting}[label=lst:lev_mat,caption=Алгоритм нахождения расстояния Левенштейна (матричный)]
+
+\end{lstlisting}
+\end{center}
+
+
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{lstlisting}[label=lst:lev_cach,caption=Алгоритм нахождения расстояния Левенштейна c использованием кеша в виде матрицы]
+
+\end{lstlisting}
+\end{center}
+
+
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{lstlisting}[label=lst:dam_lev_rec,caption=Алгоритм нахождения расстояния Дамерау-Левенштейна (рекурсивный)]
+
+\end{lstlisting}
+\end{center}
+
+\section{Функциональные тесты}
+
+В таблице \ref{tbl:functional_test} приведены тесты для функций, реализующих алгоритмы нахождения расстояния Левенштейна и Дамерау-Левенштейна. Тесты \textit{для всех алгоритмов} пройдены успешно.
+
+\begin{table}[h]
+	\begin{center}
+        \begin{threeparttable}
+        \captionsetup{justification=raggedright,singlelinecheck=off}
+		\caption{\label{tbl:functional_test} Функциональные тесты}
+		\begin{tabular}{|c|c|c|c|c|}
+			\hline
+			& & & \multicolumn{2}{c|}{Ожидаемый результат} \\
+			\hline
+			№&Строка 1&Строка 2&Левенштейн&Дамерау-Л. \\
+			\hline
+            1&"пустая строка"&"пустая строка"&0&0 \\
+            \hline
+            2&"пустая строка"&слово&5&5 \\
+            \hline
+            3&проверка&"пустая строка"&8&8 \\
+            \hline
+            4&ремонт&емонт&1&1 \\
+			\hline
+			5&гигиена&иена&3&3 \\
+			\hline
+            6&нисан&автоваз&6&6 \\
+			\hline
+			7&спасибо&пожалуйста&9&9 \\
+			\hline
+            8&что&кто&1&1 \\
+			\hline
+            9&ты&тыква&3&3 \\
+			\hline
+            10&есть&кушать&4&4 \\
+			\hline
+			11&abba&baab&3&2 \\
+			\hline
+            12&abcba&bacab&4&2 \\
+			\hline
+		\end{tabular}
+        \end{threeparttable}
+	\end{center}
+\end{table}
+
+\section{Вывод}
+
+Были представлены всех алгоритмов нахождения расстояния Левенштейна и Дамерау-Левенштейна, которые были описаны в предыдущем разделе. Также в данном разделе была приведена информации о выбранных средствах для разработки алгоритмов.
