@@ -1,0 +1,57 @@
+\chapter{Выполнение задания}
+
+Далее будут представлен код алгоритма, а также графовые представления для него.
+
+\section{Средства реализации}
+В данной работе для реализации был выбран язык программирования $Python \cite{python-lang}$. В текущей лабораторной работе требуется замерить процессорное время для выполняемой программы, а также построить графики. Все эти инструменты присутствуют в выбранном языке программирования.
+
+\section{Программный код}
+
+В листинге \ref{lst:stand_alg} представлен код алгоритма матричной реализации Левенштейна, для которого будут рассмотрены графовые представления.
+
+\clearpage
+
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{lstlisting}[label=lst:stand_alg,caption=Матричный алгоритм Левенштейна]
+def levenstein_matrix():
+    str1 = input('Input 1 string:')                     # 1
+    str2 = input('Input 2 string:')                     # 2
+
+    n = len(str1)                                       # 3
+    m = len(str2)                                       # 4
+
+    matrix = [[0] * m for _ in range(n)]                # 5
+
+    for i in range(n):                                  # 6
+        matrix[i][0] = i                                # 7
+    
+    for j in range(m):                                  # 8
+        matrix[0][j] = j                                # 9
+
+    for i in range(1, n + 1):                           # 10
+        for j in range(1, m + 1):                       # 11
+            add = matrix[i - 1][j] + 1                  # 12
+            delete = matrix[i][j - 1] + 1               # 13
+            change = matrix[i - 1][j - 1]               # 14
+            
+            if (str1[i - 1] != str2[j - 1]):            # 15
+                change += 1                             # 16
+
+            matrix[i][j] = min(add, delete, change)     # 17
+
+    return matrix[n][m]
+
+\end{lstlisting}
+\end{center}
+
+
+\section{Графовые представления}
+
+На рисунке \ref{img:oper_graph} представлен операционный граф для матричной реализации алгоритма Левенштейна, а на рисунке \ref{img:inf_graph} - информационый граф для того же алгоритма. Также на рисунке \ref{img:oper_his} представлен граф операционной истории и на рисунке \ref{img:inf_his} - граф информационой истории.
+
+
+\imgScale{0.4}{oper_graph}{Операционный граф}
+\imgScale{0.4}{inf_graph}{Информационный граф}
+\imgScale{0.2}{oper_his}{Граф операционной истории}
+\imgScale{0.14}{inf_his}{Граф информационой истории}
