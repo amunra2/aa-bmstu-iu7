@@ -1,202 +1,255 @@
+# Libs
 from time import process_time
+from random import randint
+import matplotlib.pyplot as plt 
 
-COMPARE_TYPE = 1
-RUNS_NUM = 100
+from algorythms import standart_alg, vinograd_alg, optimized_vinograd_alg
+
+
+# Text
+MSG = "\n\n      Меню \n\n \
+    1. Станадартное умножение матриц \n \
+    2. Алгоритм Винограда \n \
+    3. Опитимизированный алгоритм Винограда \n \
+    4. Все алгоритмы вместе \n \
+    5. Замерить время \n \
+    0. Выход \n\n \
+    \
+    Выбор: \
+    "
+
+# Define
+EXIT = 0
+STD_ALG = 1
+VIN_ALG = 2
+OPT_VIN_ALG = 3
+ALL_ALG = 4
+TEST =  5
+
+ODD = 1
+EVEN = 2
+
+TIMES = 100
+TO_MILISECONDS = 1000
+
+
+# Functions
 
 def input_matrix():
 
     try:
-        n = int(input("\nВведите количество строк:\n"))
+        row = int(input("\nВведите количество строк: \t"))
+        col = int(input("Введите количество столбцов: \t"))
 
-        if n < 1:
-            print("\nОшибка: количество строк должно быть больше нуля\n")
+        if ((row < 1) or (col < 1)):
+            print("Ошибка: Должно быть больше 1")
             return []
-
-        m = int(input("\nВведите количество столбцов:\n"))
-
-        if m < 1:
-            print("\nОшибка: количество столбцов меньше нуля\n")
-            return [] 
 
     except:
-        print("\nОшибка: должно быть число\n")
-        return [] 
+        print("Ошибка: Введено не число")
+        return []
 
-    print("\nВведите матрицу по числу через пробел:\n")
+    print("\nВведите матрицу по строчно (в одной строке - все числа для данной строки матрицы): ")
     matrix = []
 
-    for i in range(n):
-        try:
-            array = list(int(i) for i in input().split())
-        except:
-            print("\nОшибка: должно быть число\n")
+    for _ in range(row):
+        tmp_arr = list(int(i) for i in input().split())
+
+        if (len(tmp_arr) != col):
+            print("Ошибка: Количество чисел не соответствует количеству столбцов матрицы")
             return []
 
-        if len(array) != m:
-            print("\nОшибка: неверно введено количество чисел\n")
-            return []
-        else:
-            matrix.append(array)
+        matrix.append(tmp_arr)
+
     return matrix
+        
 
-def output_matrix(matrix):
+def output_matrix(matrix, msg):
 
-    n = len(matrix)
-    m = len(matrix[0])
-    print()
+    print(msg + '\n')
 
-    for i in range (n):
-        for j in range (m):
-            print(matrix[i][j], end = ' ')
+    row = len(matrix)
+    col = len(matrix[0])
+
+    for i in range(row):
+        for j in range(col):
+
+            print("%-3d" %(matrix[i][j]), end = '')
+
         print()
 
-    print("\n")
-
-def classic_alg(matrix_1, matrix_2):
-    n = len(matrix_1)
-    m = len(matrix_1[0])
-    k = len(matrix_2[0])
-
-    result_matrix_ = [[0] * k for _ in range(n)]
-
-    for i in range(n):
-        for j in range(k):
-            for u in range(m):
-                result_matrix_[i][j] += matrix_1[i][u] * matrix_2[u][j]
-
-    return result_matrix_
 
 
-def vinograd_alg(matrix_1, matrix_2):
-    n = len(matrix_1)
-    m = len(matrix_1[0])
-    k = len(matrix_2[0])
+def input_data():
+    mat_a = input_matrix()
+    mat_b = input_matrix()
 
-    result_matrix_ = [[0] * k for _ in range(n)]
-    row_factor = [0] * n
-
-    for i in range(n):
-        for j in range(0, m // 2, 1):
-            row_factor[i] += matrix_1[i][2 * j] * matrix_1[i][2 * j + 1]
-
-    column_factor = [0] * k
-
-    for i in range(k):
-        for j in range(0, m // 2, 1):
-            column_factor[i] += matrix_2[2 * j][i] * matrix_2[2 * j + 1][i]
-
-    for i in range(n):
-        for j in range(k):
-            result_matrix_[i][j] = -row_factor[i] - column_factor[j]
-            for u in range(0, m // 2, 1):
-                result_matrix_[i][j] += (matrix_1[i][2 * u + 1] + matrix_2[2 * u    ][j]) * \
-                                  (matrix_1[i][2 * u] + matrix_2[2 * u + 1][j])
-
-    if m % 2 == 1:
-        for i in range(n):
-            for j in range(k):
-                result_matrix_[i][j] += matrix_1[i][m - 1] * matrix_2[m - 1][j]
-    return result_matrix_
+    return mat_a, mat_b
 
 
-def optimized_vinograd_alg(matrix_1, matrix_2):
-    n = len(matrix_1)
-    m = len(matrix_1[0])
-    k = len(matrix_2[0])
+def get_rand_matrix(size):
+    
+    matrix = [[0] * size for _ in range(size)]
 
-    result_matrix_ = [[0] * k for _ in range(n)]
-    row_factor = [0] * n
+    for i in range(size):
+        for j in range(size):
+            matrix[i][j] = randint(0, 50)
 
-    for i in range(n):
-        for j in range(1, m, 2):
-            row_factor[i] += matrix_1[i][j] * matrix_1[i][j - 1]
+    return matrix
 
-    column_factor = [0] * k
 
-    for i in range(k):
-        for j in range(1, m, 2):
-            column_factor[i] += matrix_2[j][i] * matrix_2[j - 1][i]
-    flag = n % 2
+def get_process_time(func, size):
+    
+    time_res = 0
 
-    for i in range(n):
-        for j in range(k):
-            result_matrix_[i][j] = -(row_factor[i] + column_factor[j])
+    for _ in range(TIMES):
+        mat_a = get_rand_matrix(size)
+        mat_b = get_rand_matrix(size)
 
-            for u in range(1, m, 2):
-                result_matrix_[i][j] += (matrix_1[i][u - 1] + matrix_2[u    ][j]) * \
-                                  (matrix_1[i][u    ] + matrix_2[u - 1][j])
+        time_start = process_time()
+        func(mat_a, mat_b)
+        time_end = process_time()
 
-            if flag:
-                result_matrix_[i][j] += matrix_1[i][m - 1] * matrix_2[m - 1][j]
+        time_res += (time_end - time_start)
 
-    return result_matrix_
 
-def func_run(function):
-    print("\nМатрица 1\n")
-    matrix_1 = input_matrix()
+    return time_res / TIMES
 
-    if matrix_1 == []:
+
+def graph_lev_rec_and_cache(time_lev_rec, time_lev_cache):
+
+    sizes = [0, 1, 2, 3, 4, 5, 6, 7, 8 , 9]
+
+    fig = plt.figure(figsize=(10, 7))
+    plot = fig.add_subplot()
+    plot.plot(sizes, time_lev_rec, label = "Левенштейн (рекурсия)")
+    plot.plot(sizes, time_lev_cache, label="Левенштейн (рекурсия + кеш)")
+
+    plt.legend()
+    plt.grid()
+    plt.title("Временные характеристики")
+    plt.ylabel("Затраченное время (с)")
+    plt.xlabel("Длина")
+    
+    plt.show()
+
+
+def test_algos():
+
+    is_size = int(input("\nТестировать на: 1 - нечетных размерах матриц, 2 - четных: "))
+
+    if ((is_size > 2) or (is_size < 1)):
+        print("Ошибка: Неверно выбрана опция заполнения матриц")
         return
 
-    print("\nМатрица 2\n")
-    matrix_2 = input_matrix()
+    even_sizes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    odd_sizes = [11, 21, 31, 41, 51, 61, 71, 81, 91, 101]
 
-    if matrix_2 == []:
-        return
+    time_std_alg = []
+    time_vin_alg = []
+    time_opt_vin_alg = []
 
-    if len(matrix_2) != len(matrix_1[0]):
-        print("\n\tОшибка: количество строк одной матрицы должно быть равно количеству столбцов второй матрицы\n")
-        return
+    for_test = even_sizes
+    graph_text = "\nЧетные размеры матриц"
 
-    result= function(matrix_1, matrix_2)
-    print("\nРезультат перемножения матриц:\n")
+    if (is_size == EVEN):
+        for_test = even_sizes
+        graph_text = "\nЧетные размеры матриц"
+    elif (is_size == ODD):
+        for_test = odd_sizes
+        graph_text = "\nНечетные размеры матриц"
 
-    output_matrix(result)
+    print()
 
-def time_count(function, nIter, size):
-    matrix_1 = [[0] * size for _ in range(size)]
-    matrix_2 = [[0] * size for _ in range(size)]
+    for num in for_test:
 
-    t1 = process_time()
+        print("Progress:\t", num, " len")
 
-    for i in range(nIter):
-        function(matrix_1, matrix_2)
+        time_std_alg.append(get_process_time(standart_alg, num))
+        time_vin_alg.append(get_process_time(vinograd_alg, num))
+        time_opt_vin_alg.append(get_process_time(optimized_vinograd_alg, num))
 
-    t2 = process_time()
+    print("\n\nЗамер времени для алгоритмов: \n")
 
-    return (t2 - t1) / nIter
+    ind = 0
 
-def menu():
-    flag = True
-    while(flag):
-        command = input("Меню:\n \
-\t1. Классическое перемножение матриц\n \
-\t2. Алгоритм Винограда\n \
-\t3. Оптимизированный алгоритм Винограда\n \
-\t4. Замеры времени\n\n \
-\t0. Выход\n")
-        if (command == "1"):
-            func_run(classic_alg)
-        elif (command == "2"):
-            func_run(vinograd_alg)
-        elif (command == "3"):
-            func_run(optimized_vinograd_alg)
-        elif (command == "4"):
-            if COMPARE_TYPE:
-                sizes = [9, 19, 29, 39, 49, 59]
-            else:
-                sizes = [10, 20, 30, 40, 50, 60]
-            for n in sizes:
-                print("\n")
-                print("Размер матрицы: ", n)  
-                print("   Классическое перемножение            : ", "{0:.6f}".format(time_count(classic_alg, RUNS_NUM, n)))
-                print("   Алгоритм Винограда                   : ", "{0:.6f}".format(time_count(vinograd_alg, RUNS_NUM, n)))
-                print("   Оптимизированный алгоритм Винограда  : ", "{0:.6f}".format(time_count(optimized_vinograd_alg, RUNS_NUM, n)))
-                print("\n")
-        elif (command == "0"):
-            return 0
+    for num in for_test:
+        print(" %4d & %.4f & %.4f & %.4f \\\\ \n \\hline" %(num, \
+            time_std_alg[ind] * TO_MILISECONDS, \
+            time_vin_alg[ind] * TO_MILISECONDS, \
+            time_opt_vin_alg[ind] * TO_MILISECONDS))
+
+        ind += 1
+
+    # Graph
+
+
+    fig = plt.figure(figsize=(10, 7))
+    plot = fig.add_subplot()
+    plot.plot(for_test, time_vin_alg, label = "Стандартный алгоритм")
+    plot.plot(for_test, time_std_alg, label="Алгоритм Винограда")
+    plot.plot(for_test, time_opt_vin_alg, label="Оптимизированный алгоритм Винограда")
+
+    plt.legend()
+    plt.grid()
+    plt.title("Временные характеристики" + graph_text)
+    plt.ylabel("Затраченное время (с)")
+    plt.xlabel("Размер")
+    
+    plt.show()
+
+
+
+
+def main():
+    option = -1
+
+    while (option != EXIT):
+        option = int(input(MSG))
+
+        if (option == STD_ALG):
+
+            mat_a, mat_b = input_data()
+
+            res = standart_alg(mat_a, mat_b)
+
+            output_matrix(res, "\n\nРезультат:")
+
+        elif (option == VIN_ALG):
+
+            mat_a, mat_b = input_data()
+
+            res = vinograd_alg(mat_a, mat_b)
+
+            output_matrix(res, "\n\nРезультат:")
+
+        elif (option == OPT_VIN_ALG):
+            
+            mat_a, mat_b = input_data()
+
+            res = optimized_vinograd_alg(mat_a, mat_b)
+
+            output_matrix(res, "\n\nРезультат:")
+
+        elif (option == ALL_ALG):
+
+            mat_a, mat_b = input_data()
+
+            res_std = standart_alg(mat_a, mat_b)
+            res_vin = vinograd_alg(mat_a, mat_b)
+            res_opt = optimized_vinograd_alg(mat_a, mat_b)
+
+            output_matrix(res_std, "\n\nРезультат стандартаного алгоритма:")
+            output_matrix(res_vin, "\n\nРезультат алгоритма Винограда:")
+            output_matrix(res_opt, "\n\nРезультат оптимизированного алгоритма Винограда:")
+
+        elif (option == TEST):
+            
+            test_algos()
+
         else:
-            flag = False
+            print("\nПовторите ввод\n")
 
-if __name__ == "__main__": 
-    menu()
+
+if __name__ == "__main__":
+    main()

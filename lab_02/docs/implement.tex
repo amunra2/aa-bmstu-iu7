@@ -1,6 +1,6 @@
 \chapter{Технологическая часть}
 
-В данном разделе будут рассмотрены средства реализации, а также представлены листинги алгоритмов определения расстояния Левенштейна и Дамерау-Левенштейна.
+В данном разделе будут рассмотрены средства реализации, а также представлены листинги алгоритмов умножения матриц - стандартный, Винограда и оптимизированный алгоритм Винограда.
 
 \section{Средства реализации}
 В данной работе для реализации был выбран язык программирования $Python \cite{python-lang}$. В текущей лабораторной работе требуется замерить процессорное время для выполняемой программы, а также построить графики. Все эти инструменты присутствуют в выбранном языке программирования.
@@ -12,83 +12,188 @@
 
 В листингах \ref{lst:stand_alg}-\ref{lst:opt_vin_alg} представлены реализации алгоритмов умножения матриц - стандартного, Винограда и оптимизированного алгоритма Винограда.
 
-\clearpage
-
 \begin{center}
     \captionsetup{justification=raggedright,singlelinecheck=off}
     \begin{lstlisting}[label=lst:stand_alg,caption=Стандартный алгоритм умножения матриц]
+def standart_alg(mat_a, mat_b):
+	n = len(mat_a)
+	m = len(mat_a[0])
+	t = len(mat_b[0])
+	res_matrix = [[0] * t for _ in range(n)]
 
+	for i in range(n):
+		for j in range(m):
+			for k in range(t):
+				res_matrix[i][j] += mat_a[i][k] * mat_b[k][j]
+
+	return res_matrix
 \end{lstlisting}
 \end{center}
 
 
 \begin{center}
     \captionsetup{justification=raggedright,singlelinecheck=off}
-    \begin{lstlisting}[label=lst:lev_mat,caption=Алгоритм нахождения расстояния Левенштейна (матричный)]
+    \begin{lstlisting}[label=lst:vin_alg,caption=Алгоритм Винограда умножения матриц]
+def vinograd_alg(mat_a, mat_b):
 
+	n = len(mat_a)
+	m = len(mat_a[0])
+	t = len(mat_b[0])
+
+	res_matrix = [[0] * t for _ in range(n)]
+
+	tmp_row = [0] * n
+	tmp_col = [0] * t
+
+	for i in range(n):
+		for j in range(0, m // 2):
+			tmp_row[i] = tmp_row[i] + mat_a[i][2 * j] * mat_a[i][2 * j + 1]
+
+	for i in range(t):
+		for j in range(0, m // 2):
+			tmp_col[i] = tmp_col[i] + mat_b[2 * j][i] * mat_b[2 * j + 1][i] 
+
+
+	for i in range(n):
+		for j in range(t):
+
+			res_matrix[i][j] = -tmp_row[i] - tmp_col[i]   
+
+			for k in range(0, m // 2):
+
+				res_matrix[i][j] = res_matrix[i][j] + (mat_a[i][2 * k + 1] + mat_b[2 * k][j]) * (mat_a[i][2 * k] + mat_b[2 * k + 1][j])
+
+	if (m % 2 == 1):
+		for i in range(n):
+			for j in range(t):
+				res_matrix[i][j] = res_matrix[i][j] + mat_a[i][m - 1] * mat_b[m - 1][j]
+
+	return res_matrix
 \end{lstlisting}
 \end{center}
 
 
 \begin{center}
     \captionsetup{justification=raggedright,singlelinecheck=off}
-    \begin{lstlisting}[label=lst:lev_cach,caption=Алгоритм нахождения расстояния Левенштейна c использованием кеша в виде матрицы]
+    \begin{lstlisting}[label=lst:opt_vin_alg,caption=Оптимизированный алгоритм Винограда умножения матриц]
+def optimized_vinograd_alg(mat_a, mat_b):
 
+	n = len(mat_a)
+	m = len(mat_a[0])
+	t = len(mat_b[0])
+
+	res_matrix = [[0] * t for _ in range(n)]
+
+	tmp_row = [0] * n
+	tmp_col = [0] * t
+
+	for i in range(n):
+		for j in range(0, m // 2):
+			tmp_row[i] = tmp_row[i] + mat_a[i][2 * j] * mat_a[i][2 * j + 1]
+
+	for i in range(t):
+		for j in range(0, m // 2):
+			tmp_col[i] = tmp_col[i] + mat_b[2 * j][i] * mat_b[2 * j + 1][i]
+
+
+	flag = m % 2
+
+	for i in range(n):
+		for j in range(t):
+
+			res_matrix[i][j] -= (tmp_row[i] + tmp_col[i])
+
+			for k in range(1, m, 2):
+
+				res_matrix[i][j] += (mat_a[i][k - 1] + mat_b[k][j]) * (mat_a[i][k] + mat_b[k - 1][j])
+
+			if (flag):
+				res_matrix[i][j] += mat_a[i][m - 1] * mat_b[m - 1][j]
+
+	return res_matrix
 \end{lstlisting}
 \end{center}
 
-
-\begin{center}
-    \captionsetup{justification=raggedright,singlelinecheck=off}
-    \begin{lstlisting}[label=lst:dam_lev_rec,caption=Алгоритм нахождения расстояния Дамерау-Левенштейна (рекурсивный)]
-
-\end{lstlisting}
-\end{center}
 
 \section{Функциональные тесты}
 
-В таблице \ref{tbl:functional_test} приведены тесты для функций, реализующих алгоритмы нахождения расстояния Левенштейна и Дамерау-Левенштейна. Тесты \textit{для всех алгоритмов} пройдены успешно.
+В таблице \ref{tbl:functional_test} приведены тесты для функций, реализующих алгоритмы умножения матриц, рассматриваемых в данной лабораторной работе. Тесты \textit{для всех алгоритмов} пройдены успешно.
+
 
 \begin{table}[h]
 	\begin{center}
-        \begin{threeparttable}
-        \captionsetup{justification=raggedright,singlelinecheck=off}
+		\begin{threeparttable}
+		\captionsetup{justification=raggedright,singlelinecheck=off}
 		\caption{\label{tbl:functional_test} Функциональные тесты}
-		\begin{tabular}{|c|c|c|c|c|}
+		\begin{tabular}{|c@{\hspace{7mm}}|c@{\hspace{7mm}}|c@{\hspace{7mm}}|c@{\hspace{7mm}}|c@{\hspace{7mm}}|c@{\hspace{7mm}}|}
 			\hline
-			& & & \multicolumn{2}{c|}{Ожидаемый результат} \\
+			Матрица 1 & Матрица 2 & Ожидаемый результат \\ 
 			\hline
-			№&Строка 1&Строка 2&Левенштейн&Дамерау-Л. \\
-			\hline
-            1&"пустая строка"&"пустая строка"&0&0 \\
-            \hline
-            2&"пустая строка"&слово&5&5 \\
-            \hline
-            3&проверка&"пустая строка"&8&8 \\
-            \hline
-            4&ремонт&емонт&1&1 \\
-			\hline
-			5&гигиена&иена&3&3 \\
-			\hline
-            6&нисан&автоваз&6&6 \\
-			\hline
-			7&спасибо&пожалуйста&9&9 \\
-			\hline
-            8&что&кто&1&1 \\
-			\hline
-            9&ты&тыква&3&3 \\
-			\hline
-            10&есть&кушать&4&4 \\
-			\hline
-			11&abba&baab&3&2 \\
-			\hline
-            12&abcba&bacab&4&2 \\
-			\hline
+
+			$\begin{pmatrix}
+				1 & 5 & 7\\
+				2 & 6 & 8\\
+				3 & 7 & 9
+			\end{pmatrix}$ &
+			$\begin{pmatrix}
+				&
+			\end{pmatrix}$ &
+			Сообщение об ошибке \\ \hline
+
+			$\begin{pmatrix}
+				1 & 2 & 3
+			\end{pmatrix}$ &
+			$\begin{pmatrix}
+				1 & 2 & 3
+			\end{pmatrix}$ &
+			Сообщение об ошибке \\ \hline
+
+			$\begin{pmatrix}
+				1 & 1 & 1
+			\end{pmatrix}$ &
+			$\begin{pmatrix}
+				1 \\
+				1 \\
+				1
+			\end{pmatrix}$ &
+			$\begin{pmatrix}
+				1 & 1 & 1\\
+				1 & 1 & 1 \\
+				1 & 1 & 1
+			\end{pmatrix}$ \\ \hline
+
+			$\begin{pmatrix}
+				1 & 2 & 3 \\
+				4 & 5 & 6 \\
+				7 & 8 & 9
+			\end{pmatrix}$ &
+			$\begin{pmatrix}
+				1 & 0 & 0 \\
+				0 & 1 & 0 \\
+				0 & 0 & 1
+			\end{pmatrix}$ &
+			$\begin{pmatrix}
+				1 & 2 & 3 \\
+				4 & 5 & 6 \\
+				7 & 8 & 9
+			\end{pmatrix}$ \\ \hline
+
+			$\begin{pmatrix}
+				2
+			\end{pmatrix}$ &
+			$\begin{pmatrix}
+				2
+			\end{pmatrix}$ &
+			$\begin{pmatrix}
+				4
+			\end{pmatrix}$ \\ \hline
+
 		\end{tabular}
-        \end{threeparttable}
+		\end{threeparttable}
 	\end{center}
+	
 \end{table}
 
 \section{Вывод}
 
-Были представлены всех алгоритмов нахождения расстояния Левенштейна и Дамерау-Левенштейна, которые были описаны в предыдущем разделе. Также в данном разделе была приведена информации о выбранных средствах для разработки алгоритмов.
+Были представлены листинги всех алгоритмов умножения матриц - стандартного, Винограда и оптимизированного алгоритма Винограда. Также в данном разделе была приведена информации о выбранных средствах для разработки алгоритмов.
