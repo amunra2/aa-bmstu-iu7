@@ -34,6 +34,7 @@ void breshenham_float(const request_t &request, const point_t &pt1, const point_
     int sy = sign(pt2.y - pt1.y);
 
     int change = 0;
+
     if (dy > dx)
     {
         SWAP(int, dx, dy);
@@ -91,13 +92,14 @@ void breshenham_float(const request_t &request, const point_t &pt1, const point_
 
 void calculate_beam_no_parallel(const request_t &request, const beam_stgs_t &settings)
 {
+    int spektr = 360;
+
     point_t pt1, pt2;
     pt1.x = WIN_X / 2;
     pt1.y = WIN_Y / 2;
 
-    for (int i = 0; i < 360; i += 1)
+    for (int i = 0; i < spektr; i += 1)
     {
-         
         pt2.x = cos(i * PI / 180) * settings.d + WIN_X / 2;
         pt2.y = sin(i * PI / 180) * settings.d + WIN_Y / 2;
 

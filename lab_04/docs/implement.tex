@@ -1,0 +1,172 @@
+\chapter{Технологическая часть}
+
+В данном разделе будут рассмотрены средства реализации, а также представлены листинги алгоритма Брезенехема для построенияотрезка отрезка, а также листинги алгоритмов построения спектра таких отрезков с использованием многопоточности и без.
+
+\section{Средства реализации}
+В данной работе для реализации был выбран язык программирования $C++$ \cite{cpp-lang}. В текущей лабораторной работе требуется замерить процессорное время для выполняемой программы, а также реализовать принципы многопоточного алгоритма. Все эти инструменты присутствуют в выбранном языке программирования. 
+
+Функции построения графиков были реализованы с использованием языка программирования $Python$ \cite{python-lang}.
+
+Время замерено с помощью \textit{std::chrono::system\_clock::now(...)} - функции из библиотеки $chrono$ \cite{cpp-lang-chrono}.
+
+
+\section{Листинги кода}
+
+В листинге \ref{lst:bres_alg} представлены реализация алгоритма Брезенехема для построения отрезка, а в листингах \ref{lst:par_alg}-\ref{lst:no_par_alg} - алгоритмы для построения спектра отрезков по Брезенехему с многопоточностью и без нее соответственно.
+
+\clearpage
+
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{lstlisting}[label=lst:bres_alg,caption=Алгоритм Брезенехема для построения отрезка]
+void breshenham_float(const request_t &request, const point_t &pt1, const point_t &pt2){
+	int dx = abs(pt2.x - pt1.x);
+	int dy = abs(pt2.y - pt1.y);
+	int sx = sign(pt2.x - pt1.x);
+	int sy = sign(pt2.y - pt1.y);
+	int change = 0;
+
+	if (dy > dx){
+		SWAP(int, dx, dy);
+		change = 1;
+	}
+	double m = (double)dy / (double)dx;
+	double e = m - 0.5;
+	int x = pt1.x;
+	int y = pt1.y;
+
+	for (int i = 0; i < dx; i++){
+		draw_pixel(request, x, y);
+		if (e >= 0){
+			if (change == 0){
+				y += sy;
+			}
+			else{
+				x += sx;
+			}
+			e -= 1;
+		}
+		if (e < 0){
+			if (change == 0){
+				x += sx;
+			}
+			else{
+				y += sy;
+			}
+			e += m;
+		}
+	}
+}
+\end{lstlisting}
+\end{center}
+
+
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{lstlisting}[label=lst:par_alg,caption=Алгоритм построения спектра отрезков по Брезенехему (c многопоточностью)]
+void calculate_part_beam(const request_t &request, const beam_stgs_t &settings, int thread_ind){   
+    int spektr = 360;
+    int sector_in_thread = spektr / settings.threads_count;
+    int part_ind = thread_ind * sector_in_thread;
+
+    if (thread_ind + 1 == settings.threads_count){
+        sector_in_thread += (spektr - sector_in_thread * settings.threads_count);
+    }
+    point_t pt1, pt2;
+    pt1.x = WIN_X / 2;
+    pt1.y = WIN_Y / 2;
+
+    for (int i = part_ind; i < part_ind + sector_in_thread; i += 1){
+        pt2.x = cos(i * PI / 180) * settings.d + WIN_X / 2;
+        pt2.y = sin(i * PI / 180) * settings.d + WIN_Y / 2;
+
+        // Round for Bresenham float
+        pt1.x = round(pt1.x);
+        pt1.y = round(pt1.y);
+        pt2.x = round(pt2.x);
+        pt2.y = round(pt2.y); 
+        bresenham_line(request, pt1, pt2);
+    }
+}
+
+void calculate_beam_parallel(const request_t &request, const beam_stgs_t &settings){
+    std::vector<std::thread> threads(settings.threads_count);
+
+    for (int i = 0; i < settings.threads_count; i++){
+        threads[i] = std::thread(calculate_part_beam, request, settings, i);
+    }
+    for (int i = 0; i < settings.threads_count; i++){
+        threads[i].join();
+    }
+}
+\end{lstlisting}
+\end{center}
+
+
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{lstlisting}[label=lst:no_par_alg,caption=Алгоритм построения спектра отрезков по Брезенехему (без многопоточности)]
+void calculate_beam_no_parallel(const request_t &request, const beam_stgs_t &settings){
+	int spektr = 360;
+
+	point_t pt1, pt2;
+	pt1.x = WIN_X / 2;
+	pt1.y = WIN_Y / 2;
+
+	for (int i = 0; i < spektr; i += 1){
+		pt2.x = cos(i * PI / 180) * settings.d + WIN_X / 2;
+		pt2.y = sin(i * PI / 180) * settings.d + WIN_Y / 2;
+
+		// Round for Bresenham float
+		pt1.x = round(pt1.x);
+		pt1.y = round(pt1.y);
+		pt2.x = round(pt2.x);
+		pt2.y = round(pt2.y);
+
+		bresenham_line(request, pt1, pt2);
+	}
+}
+\end{lstlisting}
+\end{center}
+
+\section{Сведения о модулях программы}
+Программа состоит из двух модулей:
+\begin{itemize}
+	\item \textit{main.cpp} - файл, содержащий функцию, вызывающую интерфейс программы;
+    \item \textit{mainwindow.h} и \textit{mainwindow.cpp} - файлы, содержащие код всех методов, реализующих интерфейс программы и взаимодействующие с ним;
+	\item \textit{building.h} и \textit{building.cpp} - файлы, содержащие код алгоритма Брезенехема для построения отрезка, а также алгоритмов построения спектра отрезков с использованием многопоточности и без нее, а также функции замера времени;
+	\item \textit{graph\_build.py} - файл, содержащий функции построения графиков для замеров по времени.
+\end{itemize}
+
+
+\section{Функциональные тесты}
+
+В таблице \ref{tbl:functional_test} приведены тесты для функций программы. Тесты \textit{для всех функций} пройдены успешно.
+
+\begin{table}[h]
+	\begin{center}
+        \begin{threeparttable}
+        \captionsetup{justification=raggedright,singlelinecheck=off}
+		\caption{\label{tbl:functional_test} Функциональные тесты}
+		\begin{tabular}{|c|c|c|}
+			\hline
+			Длина отрезка & Кол-во потоков & Ожидаемый результат \\
+			\hline
+            -5 & 4 & Сообщение об ошибке \\
+            \hline
+            350 & 0 & Сообщение об ошибке \\
+            \hline
+            350 & 4 & Вывод спектра отрезков на канвас \\
+            \hline
+            10 & 32 & Вывод спектра отрезков на канвас \\
+			\hline
+			228 & 1 & Вывод спектра отрезков на канвас \\
+			\hline
+		\end{tabular}
+        \end{threeparttable}
+	\end{center}
+\end{table}
+
+\section{Вывод}
+
+Были представлены листинги всех алгоритмов построения спектра отрезков по Брезенехему с распараллеливанием и без него, а также сам алгоритм Брезенехема для генерации отрезка. Также в данном разделе была приведена информации о выбранных средствах для разработки алгоритмов и сведения о модулях программы, проведено функциональное тестирование.
