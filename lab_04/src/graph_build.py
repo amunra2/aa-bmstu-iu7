@@ -1,4 +1,6 @@
-# Libs
+# Regina Best 79
+
+# Libs 
 import matplotlib.pyplot as plt 
 
 # Text
