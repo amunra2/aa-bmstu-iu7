@@ -2,8 +2,12 @@
 
 double time_now = 0;
 
+std::vector<double> t1;
+std::vector<double> t2;
+std::vector<double> t3;
 
-void log(matrix_t &matrix, int task_num, int stage_num, void (*func)(matrix_t &), bool is_print)
+
+void log_linear(matrix_t &matrix, int task_num, int stage_num, void (*func)(matrix_t &), bool is_print)
 {
     std::chrono::time_point<std::chrono::system_clock> time_start, time_end;
     double start_res_time = time_now, res_time = 0;
@@ -15,7 +19,51 @@ void log(matrix_t &matrix, int task_num, int stage_num, void (*func)(matrix_t &)
     res_time = (std::chrono::duration_cast<std::chrono::nanoseconds>
             (time_end - time_start).count()) / 1e9;
 
-    time_now = start_res_time + res_time; // here or after print?
+     // here or after print?
+
+    time_now = start_res_time + res_time;
+
+    if (is_print)
+        printf("Task: %3d, Tape: %3d, Start: %.6f, End: %.6f\n", 
+                    task_num, stage_num, start_res_time, start_res_time + res_time);
+}
+
+
+
+void log_conveyor(matrix_t &matrix, int task_num, int stage_num, void (*func)(matrix_t &), bool is_print)
+{
+    std::chrono::time_point<std::chrono::system_clock> time_start, time_end;
+    double res_time = 0;
+
+    time_start = std::chrono::system_clock::now();
+    func(matrix);
+    time_end = std::chrono::system_clock::now();
+
+    res_time = (std::chrono::duration_cast<std::chrono::nanoseconds>
+            (time_end - time_start).count()) / 1e9;
+
+     // here or after print?
+
+    double start_res_time;
+
+    if (stage_num == 1)
+    {
+        start_res_time = t1[task_num - 1];
+
+        t1[task_num] = start_res_time + res_time;
+        t2[task_num - 1] = t1[task_num];
+    }
+    else if (stage_num == 2)
+    {
+        start_res_time = t2[task_num - 1];
+
+        t2[task_num] = start_res_time + res_time;
+        t3[task_num - 1] = t2[task_num];
+    }
+    else if (stage_num == 3)
+    {
+        start_res_time = t3[task_num - 1];
+    }
 
     if (is_print)
         printf("Task: %3d, Tape: %3d, Start: %.6f, End: %.6f\n", 
@@ -25,25 +73,26 @@ void log(matrix_t &matrix, int task_num, int stage_num, void (*func)(matrix_t &)
 
 void stage1_linear(matrix_t &matrix, int task_num, bool is_print)
 {
-    log(matrix, task_num, 1, get_avg, is_print);
+    log_linear(matrix, task_num, 1, get_avg, is_print);
 }
 
 
 
 void stage2_linear(matrix_t &matrix, int task_num, bool is_print)
 {   
-    log(matrix, task_num, 2, get_max, is_print);
+    log_linear(matrix, task_num, 2, get_max, is_print);
 }
 
 
 void stage3_linear(matrix_t &matrix, int task_num, bool is_print)
 {   
-    log(matrix, task_num, 3, fill_matrix, is_print);
+    log_linear(matrix, task_num, 3, fill_matrix, is_print);
 }
 
 
 void parse_linear(int count, size_t size, bool is_print)
 {
+
     time_now = 0;
 
     std::queue<matrix_t> q1;
@@ -92,13 +141,13 @@ void stage1_parallel(std::queue<matrix_t> &q1, std::queue<matrix_t> &q2, std::qu
     {      
         m.lock();
         matrix_t matrix = q1.front();
-        q1.pop();
         m.unlock();
 
-        log(matrix, task_num++, 1, get_avg, is_print);
+        log_conveyor(matrix, task_num++, 1, get_avg, is_print);
 
         m.lock();
         q2.push(matrix);
+        q1.pop();
         m.unlock();
     }
 }
@@ -120,13 +169,13 @@ void stage2_parallel(std::queue<matrix_t> &q1, std::queue<matrix_t> &q2, std::qu
         {   
             m.lock();
             matrix_t matrix = q2.front();
-            q2.pop();
             m.unlock();
 
-            log(matrix, task_num++, 2, get_max, is_print);
+            log_conveyor(matrix, task_num++, 2, get_max, is_print);
 
             m.lock();
             q3.push(matrix);
+            q2.pop();
             m.unlock();
         }
     } while (!q1.empty() || !q2.empty());
@@ -151,7 +200,7 @@ void stage3_parallel(std::queue<matrix_t> &q1, std::queue<matrix_t> &q2, std::qu
             matrix_t matrix = q3.front(); 
             m.unlock();
 
-            log(matrix, task_num++, 3, fill_matrix, is_print);
+            log_conveyor(matrix, task_num++, 3, fill_matrix, is_print);
 
             m.lock();
             q3.pop();
@@ -163,7 +212,16 @@ void stage3_parallel(std::queue<matrix_t> &q1, std::queue<matrix_t> &q2, std::qu
 
 void parse_parallel(int count, size_t size, bool is_print)
 {
-    time_now = 0;
+    t1.resize(count + 1);
+    t2.resize(count + 1);
+    t3.resize(count + 1);
+
+    for (int i = 0; i < count + 1; i++)
+    {
+        t1[i] = 0;
+        t2[i] = 0;
+        t3[i] = 0;
+    }
 
     std::queue<matrix_t> q1;
     std::queue<matrix_t> q2;
