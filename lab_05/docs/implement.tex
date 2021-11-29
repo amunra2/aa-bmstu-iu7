@@ -110,13 +110,13 @@ void stage1_parallel(std::queue<matrix_t> &q1, std::queue<matrix_t> &q2, std::qu
 	{      
 		m.lock();
 		matrix_t matrix = q1.front();
-		q1.pop();
 		m.unlock();
 
 		log(matrix, task_num++, 1, get_avg, is_print);
 
 		m.lock();
 		q2.push(matrix);
+		q1.pop();
 		m.unlock();
 	}
 }
@@ -144,13 +144,13 @@ void stage2_parallel(std::queue<matrix_t> &q1, std::queue<matrix_t> &q2, std::qu
 		{   
 			m.lock();
 			matrix_t matrix = q2.front();
-			q2.pop();
 			m.unlock();
 
 			log(matrix, task_num++, 2, get_max, is_print);
 
 			m.lock();
 			q3.push(matrix);
+			q2.pop();
 			m.unlock();
 		}
 	} while (!q1.empty() || !q2.empty());
