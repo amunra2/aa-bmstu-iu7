@@ -1,0 +1,233 @@
+\chapter{Технологическая часть}
+
+В данном разделе будут рассмотрены средства реализации, а также представлены листинги линейной и конвейрной орбаботок матрицы.
+
+\section{Средства реализации}
+В данной работе для реализации был выбран язык программирования $C++$ \cite{cpp-lang}. В текущей лабораторной работе требуется замерить процессорное время для выполняемой программы, а также реализовать принципы многопоточного алгоритма. Все эти инструменты присутствуют в выбранном языке программирования. 
+
+Функции построения графиков были реализованы с использованием языка программирования $Python$ \cite{python-lang}.
+
+Время замерено с помощью \textit{std::chrono::system\_clock::now(...)} - функции из библиотеки $chrono$ \cite{cpp-lang-chrono}.
+
+
+\section{Листинги кода}
+
+В листинге \ref{lst:bres_alg} представлены реализация алгоритма Брезенехема для построения отрезка, а в листингах \ref{lst:par_alg}-\ref{lst:no_par_alg} - алгоритмы для построения спектра отрезков по Брезенехему с многопоточностью и без нее соответственно.
+
+\clearpage
+
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{lstlisting}[label=lst:bres_alg,caption=Алгоритм линейной обработки матрицы]
+void parse_linear(int count, size_t size, bool is_print)
+{
+	time_now = 0;
+
+	std::queue<matrix_t> q1;
+	std::queue<matrix_t> q2;
+	std::queue<matrix_t> q3;
+
+	queues_t queues = {.q1 = q1, .q2 = q2, .q3 = q3};
+
+	for (int i = 0; i < count; i++)
+	{
+		matrix_t res = generate_matrix(size);
+		
+		queues.q1.push(res);
+	}
+
+	for (int i = 0; i < count; i++)
+	{
+		matrix_t matrix = queues.q1.front();
+		stage1_linear(matrix, i + 1, is_print);
+		queues.q1.pop();
+		queues.q2.push(matrix);
+
+		matrix = queues.q2.front();
+		stage2_linear(matrix, i + 1, is_print); // Stage 2
+		queues.q2.pop();
+		queues.q3.push(matrix);
+
+		matrix = queues.q3.front();
+		stage3_linear(matrix, i + 1, is_print); // Stage 3
+		queues.q3.pop();
+	}
+}
+\end{lstlisting}
+\end{center}
+
+\clearpage
+
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{lstlisting}[label=lst:par_alg,caption=Алгоритм конвейерной обработки матрицы]
+void parse_parallel(int count, size_t size, bool is_print)
+{
+	time_now = 0;
+
+	std::queue<matrix_t> q1;
+	std::queue<matrix_t> q2;
+	std::queue<matrix_t> q3;
+
+	queues_t queues = {.q1 = q1, .q2 = q2, .q3 = q3};
+
+	
+	for (int i = 0; i < count; i++)
+	{
+		matrix_t res = generate_matrix(size);
+		
+		q1.push(res);
+	}
+
+	std::thread threads[THREADS];
+
+	threads[0] = std::thread(stage1_parallel, std::ref(q1), std::ref(q2), std::ref(q3), is_print);
+	threads[1] = std::thread(stage2_parallel, std::ref(q1), std::ref(q2), std::ref(q3), is_print);
+	threads[2] = std::thread(stage3_parallel, std::ref(q1), std::ref(q2), std::ref(q3), is_print);
+
+	for (int i = 0; i < THREADS; i++)
+	{
+		threads[i].join();
+	}
+}
+\end{lstlisting}
+\end{center}
+
+
+\clearpage
+
+
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{lstlisting}[label=lst:no_par_alg,caption=Алгоритм запуска 1 потока для нахождения среднего арифметического элементов матрицы]
+void stage1_parallel(std::queue<matrix_t> &q1, std::queue<matrix_t> &q2, std::queue<matrix_t> &q3, bool is_print)
+{
+	int task_num = 1;
+
+	std::mutex m;
+
+	while(!q1.empty())
+	{      
+		m.lock();
+		matrix_t matrix = q1.front();
+		m.unlock();
+
+		log(matrix, task_num++, 1, get_avg, is_print);
+
+		m.lock();
+		q2.push(matrix);
+		q1.pop();
+		m.unlock();
+	}
+}
+\end{lstlisting}
+\end{center}
+
+\clearpage
+
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{lstlisting}[label=lst:no_par_alg,caption=Алгоритм запуска 2 потока для нахождения максимального элемента матрицы]
+void stage2_parallel(std::queue<matrix_t> &q1, std::queue<matrix_t> &q2, std::queue<matrix_t> &q3, bool is_print)
+{
+	int task_num = 1;
+
+	std::mutex m;
+
+	do
+	{   
+		m.lock();
+		bool is_q2empty = q2.empty();
+		m.unlock();
+
+		if (!is_q2empty)
+		{   
+			m.lock();
+			matrix_t matrix = q2.front();
+			m.unlock();
+
+			log(matrix, task_num++, 2, get_max, is_print);
+
+			m.lock();
+			q3.push(matrix);
+			q2.pop();
+			m.unlock();
+		}
+	} while (!q1.empty() || !q2.empty());
+}
+\end{lstlisting}
+\end{center}
+
+\clearpage
+
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{lstlisting}[label=lst:no_par_alg,caption=Алгоритм запуска 3 потока для заполнения матрицы вычисленными значениями]
+void stage3_parallel(std::queue<matrix_t> &q1, std::queue<matrix_t> &q2, std::queue<matrix_t> &q3, bool is_print)
+{
+	int task_num = 1;
+
+	std::mutex m;
+
+	do
+	{
+		m.lock();
+		bool is_q3empty = q3.empty();
+		m.unlock();
+
+		if (!is_q3empty)
+		{
+			m.lock();
+            matrix_t matrix = q3.front(); 
+            q3.pop();
+            m.unlock();
+
+			log(matrix, task_num++, 3, fill_matrix, is_print);
+		}
+
+	} while (!q1.empty() || !q2.empty() || !q3.empty());
+}
+\end{lstlisting}
+\end{center}
+
+\section{Сведения о модулях программы}
+Программа состоит из двух модулей:
+\begin{itemize}
+	\item \textit{main.cpp} - файл, содержащий меню программы;
+    \item \textit{matrix.h} и \textit{matrix.cpp} - файлы, содержащие код работы с матрицей (генерация, печать и алгоритмы обработки матрицы);
+	\item \textit{conveyor.h} и \textit{conveyor.cpp} - файлы, содержащие код реализации линейной и конвейерной обработок, а также функции замера времени;
+	\item \textit{graph\_build.py} - файл, содержащий функции построения графиков для замеров по времени.
+\end{itemize}
+
+
+\section{Функциональные тесты}
+
+В таблице \ref{tbl:functional_test} приведены тесты для функций программы. Тесты \textit{для всех функций} пройдены успешно.
+
+\begin{table}[h]
+	\begin{center}
+        \begin{threeparttable}
+        \captionsetup{justification=raggedright,singlelinecheck=off}
+		\caption{\label{tbl:functional_test} Функциональные тесты}
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			Алгоритм & Кол-во матриц & Размер матриц & Ожидаемый результат \\
+			\hline
+            Конвейрная & -5 & 500 & Сообщение об ошибке \\
+            \hline
+            Конвейрная & 10 & -23 & Сообщение об ошибке \\
+            \hline
+			Линейная & 50 & 1500 & Вывод лога работы программы \\
+            \hline
+			Конвейрная & 10 & 100 & Вывод лога работы программы \\
+			\hline
+			Конвейрная & 5 & 10 & Вывод лога работы программы \\
+			\hline
+		\end{tabular}
+        \end{threeparttable}
+	\end{center}
+\end{table}
+
+\section{Вывод}
+
+Были представлены листинги всех алгоритмов линейной и конвейерной обработки матриц. Также в данном разделе была приведена информации о выбранных средствах для разработки алгоритмов и сведения о модулях программы, проведено функциональное тестирование.
