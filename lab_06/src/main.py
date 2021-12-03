@@ -4,13 +4,10 @@ from random import randint, random
 import matplotlib.pyplot as plt 
 
 import itertools as it
-
 import numpy as np
-
 from os import system
 
-from numpy.lib.function_base import append
-from numpy.matrixlib import matrix
+from algorythms import full_combinations, ant_algorythm
 
 
 
@@ -43,8 +40,6 @@ EVEN = 2
 
 TIMES = 100
 TO_MILISECONDS = 1000
-
-MIN_PHEROMONE = 0.01
 
 
 # Functions
@@ -192,36 +187,6 @@ def read_matrix():
     return matrix
 
 
-def full_combinations(matrix, size):
-    cities = np.arange(size)
-    cities_combs = list()
-
-    for combination in it.permutations(cities):
-        comb_arr = list(combination)
-
-        cities_combs.append(comb_arr)
-
-    min_dist = float("inf")
-
-    for i in range(len(cities_combs)):
-        cities_combs[i].append(cities_combs[i][0])
-
-        cur_dist = 0
-
-        for j in range(size):
-            start_city = cities_combs[i][j]
-            end_city = cities_combs[i][j + 1]
-
-            cur_dist += matrix[start_city][end_city]
-
-        if (cur_dist < min_dist):
-            min_dist = cur_dist
-
-            best_way = cities_combs[i]
-
-    return min_dist, best_way
-    
-
 def parse_full_combinations():
 
     matrix = read_matrix()
@@ -233,241 +198,11 @@ def parse_full_combinations():
             "\nПуть: ", result[1])
 
 
-# Ant algorythm
-def calc_q(matrix, size):
-    
-    q = 0
-    count = 0
-
-    for i in range(size):
-        for j in range(size):
-            if (i != j):
-                q += matrix[i][j]
-                count += 1
-
-    return q / count
-
-
-def get_pheromones(size):
-
-    min_phero = 1
-    pheromones = [[min_phero for i in range(size)] for j in range(size)]
-
-    return pheromones
-
-
-def get_visibility(matrix, size):
-
-    visibility = [[(1.0 / matrix[i][j] if (i != j) else 0) for j in range(size)] for i in range(size)]
-
-    return visibility
-
-
-def get_visited_places(route, ants):
-
-    visited = [list() for _ in range(ants)]
-
-    for ant in range(ants):
-        visited[ant].append(route[ant])
-
-    return visited
-
-
-def calc_length(matrix, route):
-    length = 0
-
-    for way_len in range(1, len(route)):
-        length += matrix[route[way_len - 1], route[way_len]]
-
-    return length
-
-
-def ant_algorythm(matrix, places, alpha, beta, k_evaporation, days):
-    q = calc_q(matrix, places)
-
-    best_way = []
-    min_length = float("inf")
-
-    pheromones = get_pheromones(places)
-    visibility = get_visibility(matrix, places)
-
-    ants = places
-
-    for day in range(days):
-        route = np.arange(places)
-
-        visited = get_visited_places(route, ants)
-
-        for ant in range(ants):
-            while (len(visited[ant]) != ants):
-                pk = [0] * places
-
-                for place in range(places):
-                    if place not in visited[ant]:
-                        ant_place = visited[ant][-1]
-
-                        pk[place] = pow(pheromones[ant_place][place], alpha) * \
-                            pow(visibility[ant_place][place], beta)
-                    
-                    else:
-                        pk[place] = 0
-
-                sum_pk = sum(pk)
-
-                for place in range(places):
-                    pk[place] /= sum_pk    
-
-                # Следующий город
-
-                #  0         pk[0]  pk[1]    pk[2]       pk[2]  1
-                #  |----------|------|--------|---x--------|----|
-                posibility = random()
-                choice = 0
-                chosen_place = 0
-
-                while ((choice < posibility) and (chosen_place < len(pk))):
-                    choice += pk[chosen_place]
-                    chosen_place += 1
-
-                visited[ant].append(chosen_place - 1)
-        
-            visited[ant].append(visited[ant][0])
-
-            # Длина текущего маршрута
-            cur_length = calc_length(matrix, visited[ant]) 
-
-            if (cur_length < min_length):
-                min_length = cur_length
-                best_way = visited[ant]
-
-        # Обновить значения
-        for i in range(places):
-            for j in range(places):
-                delta_pheromones = 0
-
-                for ant in range(ants):
-                    length = calc_length(matrix, visited[ant])
-                    delta_pheromones += q / length
-
-                pheromones[i][j] *= (1 - k_evaporation)
-                pheromones[i][j] += delta_pheromones
-
-                if (pheromones[i][j] < MIN_PHEROMONE):
-                    pheromones[i][j] = MIN_PHEROMONE
-
-    return min_length, best_way
-
-
-def calculate_q(matrix, cities):
-    q = 0
-    count = 0
-
-    for i in range(cities):
-        for j in range(cities):
-            if i != j:
-                q += matrix[i][j]
-                count += 1
-    
-    return q / count
-
-
-def calculate_lk(matrix, visited_cities):
-    lk = 0
-
-    for l in range(1, len(visited_cities)):
-        i = visited_cities[l-1]
-        j = visited_cities[l]
-        lk += matrix[i][j]
-
-    return lk
-
-
-def ant_search(matrix, cities, alpha, beta, evaporation_coef, days_max):
-    pheromones = [[1 for _ in range(cities)] for _ in range(cities)] # tau
-    visibility = [[1.0 / matrix[i][j] for j in range(cities)] for i in range(cities)] # eta
-
-    pheromone_min = 0.01
-    ants = cities
-    Q = calculate_q(matrix, cities)
-    min_distance = float("inf")
-
-    # Цикл по всем дням
-    for day in range(days_max):
-        # Задаем список городов для текущего дня
-        curr_route = list(range(cities))
-        # shuffle(curr_route)
-
-        # Создаем массив посещенных городов для муравьев
-        visited_cities = [0] * ants
-        
-        # Расставляем муравьев по уникальным городам
-        for i in range(ants):
-            visited_cities[i] = []
-            visited_cities[i].append(curr_route[i])
-
-        # Цикл по всем муравьям
-        for k in range(ants):
-            # Построение маршрута для текущего муравья
-            while len(visited_cities[k]) != ants:
-                Pk = [0] * cities
-                # Определение вероятность перехода муравья из текущего города в непосещенные города
-                for city in range(cities):
-                    if city not in visited_cities[k]:
-                        ant_curr_city = visited_cities[k][-1]
-                        Pk[city] = pow(pheromones[ant_curr_city][city], alpha) *\
-                                   pow(visibility[ant_curr_city][city], beta)
-                    else:
-                        Pk[city] = 0
-
-                sum_Pk = sum(Pk)
-
-                for city in range(cities):
-                    Pk[city] /= sum_Pk
-
-                # Выбор следующего города
-                coin = random()
-                choice, i = 0, 0
-
-                while choice < coin and (i < len(Pk)):
-                    choice += Pk[i]
-                    i += 1
-                
-                visited_cities[k].append(i - 1)
-            
-            visited_cities[k].append(visited_cities[k][0])
-
-            # Подсчет длины текущего маршрута
-            Lk = calculate_lk(matrix, visited_cities[k])
-
-            if Lk < min_distance:
-                min_distance = Lk
-                best_route = visited_cities[k]
-        
-        # Цикл по всем ребрам графа для обновления следов феромона
-        for i in range(cities):
-            for j in range(cities):
-                # Нахождение количества откладываемого феромона всеми муравьями
-                delta_pheromones = 0
-
-                for k in range(ants):
-                    Lk = calculate_lk(matrix, visited_cities[k])
-                    delta_pheromones += Q / Lk
-
-                # Обновление следов феромонов
-                pheromones[i][j] *= (1 - evaporation_coef)
-                pheromones[i][j] += delta_pheromones
-
-                if pheromones[i][j] < pheromone_min:
-                    pheromones[i][j] = pheromone_min
-
-    return min_distance, best_route
-
-
 def read_koefs():
     alpha = float(input("\n\nВведите коэффициент alpha: " ))
-    beta = float(input("\nВведите коэффициент beta: " ))
-    k_evaporation = float(input("\nВведите коэффициент evaporation: " ))
-    days = int(input("\nВведите кол-во дней: " ))
+    beta = 1 - alpha
+    k_evaporation = float(input("Введите коэффициент evaporation: " ))
+    days = int(input("Введите кол-во дней: " ))
     
     return alpha, beta, k_evaporation, days
 
@@ -481,12 +216,7 @@ def parse_ant_alg():
 
     result = ant_algorythm(matrix, size, alpha, beta, k_evaporation, days)
 
-    print("\n\n1. Минимальная сумма пути = ", result[0], 
-            "\nПуть: ", result[1])
-
-    result = ant_search(matrix, size, alpha, beta, k_evaporation, days)
-
-    print("\n\n2. Минимальная сумма пути = ", result[0], 
+    print("\n\nМинимальная сумма пути = ", result[0], 
             "\nПуть: ", result[1])
 
 
@@ -553,6 +283,14 @@ def time_test():
     for i in range(len(sizes_arr)):
         print(" %6d | %22.6f | %27.6f" %(sizes_arr[i], time_full_combs[i], time_ant[i]))
 
+    # For Latex
+    f_latex = open("latex_table.txt", "w")
+
+    for i in range(len(sizes_arr)):
+        f_latex.write("%4d & %10.6f & %10.6f \\\\ \\hline\n" %(sizes_arr[i], time_full_combs[i], time_ant[i]))
+
+    f_latex.close()
+    
     # Graph
     fig = plt.figure(figsize=(10, 7))
     plot = fig.add_subplot()
@@ -568,10 +306,10 @@ def time_test():
     plt.show()
 
 
-def parametrization():
+def parametrization(latex = False):
     alpha_arr = [num / 10 for num in range(1, 10)]
     k_eva_arr = [num / 10 for num in range(1, 9)]
-    days_arr = [10, 50, 100, 200, 300, 400, 500]
+    days_arr = [1, 3, 5, 10, 50, 100, 300, 500]
 
     size = 9
 
@@ -587,6 +325,8 @@ def parametrization():
     count = 0
     count_all = len(alpha_arr) * len(k_eva_arr)
 
+    print()
+
     for alpha in alpha_arr:
         beta = 1 - alpha
 
@@ -597,13 +337,17 @@ def parametrization():
                 res1 = ant_algorythm(matrix1, size, alpha, beta, k_eva, days)
                 res2 = ant_algorythm(matrix2, size, alpha, beta, k_eva, days)
 
-                sep = "|"
-                ender = ""
+                if (latex):
+                    sep = "&"
+                    ender = "\\\\"
+                else:
+                    sep = "|" 
+                    ender = ""
 
-                str1 = "%3.1f %s %3.1f %s %3.1d %s %5d %s %5d %s\n" \
+                str1 = "%4.1f %s %4.1f %s %4d %s %5d %s %5d %s\n" \
                     % (alpha, sep, k_eva, sep, days, sep, optimal1[0], sep, res1[0] - optimal1[0], ender)
 
-                str2 = "%3.1f %s %3.1f %s %3.1d %s %5d %s %5d %s\n" \
+                str2 = "%4.1f %s %4.1f %s %4d %s %5d %s %5d %s\n" \
                     % (alpha, sep, k_eva, sep, days, sep, optimal1[0], sep, res2[0] - optimal2[0], ender)
 
                 file1.write(str1)
@@ -631,7 +375,7 @@ def main():
             parse_all()
 
         elif (option == PARAMETRIC):
-            parametrization()
+            parametrization(latex=True)
 
         elif (option == TEST):
             time_test()
