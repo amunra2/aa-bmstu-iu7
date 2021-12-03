@@ -1,3 +1,8 @@
 mat10.csv
+mat20.csv
 mat50.csv
 mat5.csv
+mat6.csv
+mat7.csv
+mat8.csv
+mat9.csv
