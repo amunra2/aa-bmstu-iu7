@@ -1,0 +1,117 @@
+<mxfile host="65bd71144e">
+    <diagram id="QM2p47kPDZQZnexqTIiv" name="Страница 1">
+        <mxGraphModel dx="803" dy="605" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="197" style="edgeStyle=none;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=30;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;" edge="1" parent="1" source="3" target="167">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="Начало" style="html=1;dashed=0;whitespace=wrap;shape=mxgraph.dfd.start" parent="1" vertex="1">
+                    <mxGeometry x="860" y="120" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;dashed=1;" parent="1" source="7" target="3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="find_posibilyties(pheromones, visiblity, visited, places, ant, alpha, beta)&lt;br&gt;&lt;br&gt;Вход: pheromones - матрица феромонов на путях, visiblity - матрица&lt;br&gt;видимости города, visited - массив посещенных городов, places - кол-во&lt;br&gt;городов, ant - номер муравья, alpha, beta - коэффициенты&lt;br&gt;Выход: массив вероятных переходов" style="html=1;dashed=0;whitespace=wrap;shape=partialRectangle;right=0;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="1130" y="110" width="30" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="198" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;" edge="1" parent="1" source="167" target="181">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="167" value="Инициализация массива&lt;br&gt;вероятных переходов (pk)&lt;br&gt;по кол-ву городов" style="html=1;dashed=0;whitespace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="860" y="210" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="204" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;" edge="1" parent="1" source="181" target="201">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="181" value="Цикл place от 0 до places" style="shape=loopLimit;whiteSpace=wrap;html=1;direction=east" parent="1" vertex="1">
+                    <mxGeometry x="860" y="300" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="199" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;endArrow=classic;endFill=1;" edge="1" source="201" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1120" y="480" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="210" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=classic;endFill=1;rounded=0;" edge="1" parent="1" source="201" target="208">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="201" value="place не в массиве &lt;br&gt;visited" style="shape=rhombus;html=1;dashed=0;whitespace=wrap;perimeter=rhombusPerimeter;" vertex="1" parent="1">
+                    <mxGeometry x="860" y="390" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="202" value="Да" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="1045" y="390" width="30" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="211" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;" edge="1" parent="1" source="203" target="205">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="203" value="ant_place = visited[-1]" style="html=1;dashed=0;whitespace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="1020" y="480" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="213" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="205" target="212">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1120" y="660"/>
+                            <mxPoint x="960" y="660"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="205" value="pk[place] = &lt;br&gt;(pheromones[ant_place][place] ** &lt;br&gt;alpha) * (visibility[ant_place][place]&lt;br&gt;** beta)" style="html=1;dashed=0;whitespace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="1020" y="570" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="206" value="Вычисление по формуле" style="html=1;dashed=0;whitespace=wrap;shape=partialRectangle;right=0;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="1290" y="560" width="30" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="207" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;dashed=1;" edge="1" source="206" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1220" y="600" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="214" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;endArrow=none;endFill=0;" edge="1" parent="1" source="208">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="960" y="660" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="800" y="660"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="208" value="pk[place] = 0" style="html=1;dashed=0;whitespace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="700" y="480" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="222" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;" edge="1" parent="1" source="212" target="217">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="212" value="place += 1" style="shape=loopLimit;whiteSpace=wrap;html=1;strokeWidth=1;direction=west;" vertex="1" parent="1">
+                    <mxGeometry x="860" y="700" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="215" value="Конец" style="html=1;dashed=0;whitespace=wrap;shape=mxgraph.dfd.start" vertex="1" parent="1">
+                    <mxGeometry x="860" y="1150" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="223" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;" edge="1" parent="1" source="217" target="219">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="217" value="Вычислить сумму элементов массива pk&amp;nbsp;&lt;br&gt;(sum_pk)" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" vertex="1" parent="1">
+                    <mxGeometry x="860" y="790" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="224" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;" edge="1" parent="1" source="219" target="220">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="219" value="Цикл place от 0 до places" style="shape=loopLimit;whiteSpace=wrap;html=1;direction=east" vertex="1" parent="1">
+                    <mxGeometry x="860" y="880" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="225" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=none;endFill=0;" edge="1" parent="1" source="220" target="221">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="220" value="pk[place] /= sum_pk" style="html=1;dashed=0;whitespace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="860" y="970" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="226" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.5;entryDx=0;entryDy=-30;entryPerimeter=0;endArrow=none;endFill=0;" edge="1" parent="1" source="221" target="215">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="221" value="place += 1" style="shape=loopLimit;whiteSpace=wrap;html=1;strokeWidth=1;direction=west;" vertex="1" parent="1">
+                    <mxGeometry x="860" y="1060" width="200" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

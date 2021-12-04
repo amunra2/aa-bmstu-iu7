@@ -1,6 +1,7 @@
 # Libs
 from time import process_time
 from random import randint, random
+from typing import TYPE_CHECKING
 import matplotlib.pyplot as plt 
 
 import itertools as it
@@ -35,11 +36,15 @@ TEST =  5
 UPDATE_DATA = 6
 SHOW_DATA = 7
 
-ODD = 1
-EVEN = 2
+# Type
+LATEX = 0
+CSV = 1
+NORMAL = 2
 
 TIMES = 100
 TO_MILISECONDS = 1000
+
+
 
 
 # Functions
@@ -129,7 +134,7 @@ def list_files():
 
 
 def update_file():
-    option = int(input("Добавить новый файл? (1 - да, 2 - нет): "))
+    option = int(input("\nДобавить новый файл? (1 - да, 2 - нет): "))
 
     if (option == 1):
         file_name = input("\nВведите имя файла: ")
@@ -306,15 +311,15 @@ def time_test():
     plt.show()
 
 
-def parametrization(latex = False):
+def parametrization(type = CSV):
     alpha_arr = [num / 10 for num in range(1, 10)]
     k_eva_arr = [num / 10 for num in range(1, 9)]
     days_arr = [1, 3, 5, 10, 50, 100, 300, 500]
 
     size = 9
 
-    matrix1 = generate_matrix(size, 1, 2)
-    matrix2 = generate_matrix(size, 1000, 9999)
+    matrix1 = read_file_matrix("mat9_lowdif.csv")
+    matrix2 = read_file_matrix("mat9_highdif.csv")
 
     optimal1 = full_combinations(matrix1, size)
     optimal2 = full_combinations(matrix2, size)
@@ -337,18 +342,21 @@ def parametrization(latex = False):
                 res1 = ant_algorythm(matrix1, size, alpha, beta, k_eva, days)
                 res2 = ant_algorythm(matrix2, size, alpha, beta, k_eva, days)
 
-                if (latex):
-                    sep = "&"
-                    ender = "\\\\"
+                if (type == LATEX):
+                    sep = " & "
+                    ender = " \\\\"
+                elif (type == CSV):
+                    sep = ", "
+                    ender = ""
                 else:
-                    sep = "|" 
+                    sep = " | " 
                     ender = ""
 
-                str1 = "%4.1f %s %4.1f %s %4d %s %5d %s %5d %s\n" \
+                str1 = "%4.1f%s%4.1f%s%4d%s%5d%s%5d%s\n" \
                     % (alpha, sep, k_eva, sep, days, sep, optimal1[0], sep, res1[0] - optimal1[0], ender)
 
-                str2 = "%4.1f %s %4.1f %s %4d %s %5d %s %5d %s\n" \
-                    % (alpha, sep, k_eva, sep, days, sep, optimal1[0], sep, res2[0] - optimal2[0], ender)
+                str2 = "%4.1f%s%4.1f%s%4d%s%5d%s%5d%s\n" \
+                    % (alpha, sep, k_eva, sep, days, sep, optimal2[0], sep, res2[0] - optimal2[0], ender)
 
                 file1.write(str1)
                 file2.write(str2)
@@ -375,7 +383,7 @@ def main():
             parse_all()
 
         elif (option == PARAMETRIC):
-            parametrization(latex=True)
+            parametrization(type = CSV)
 
         elif (option == TEST):
             time_test()

@@ -1,0 +1,150 @@
+<mxfile host="65bd71144e">
+    <diagram id="QM2p47kPDZQZnexqTIiv" name="Страница 1">
+        <mxGraphModel dx="803" dy="605" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="190" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;" parent="1" target="189" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="960" y="990" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="191" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;endArrow=none;endFill=0;" parent="1" source="189" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="960" y="1110" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="189" value="Цикл пока массив посещенных городов (visited) не заполнен&amp;nbsp;" style="shape=loopLimit;whiteSpace=wrap;html=1;direction=east" parent="1" vertex="1">
+                    <mxGeometry x="860" y="1020" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="200" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;rounded=0;endArrow=none;endFill=0;" parent="1" source="192" target="197" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="192" value="Массив вероятностей перехода из текущего города в непосещенный&lt;br&gt;pk" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" parent="1" vertex="1">
+                    <mxGeometry x="860" y="1110" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="195" value="find_posibilyties(pheromones, visiblity, visited, places, ant, alpha, beta)&lt;br&gt;&lt;br&gt;Находит вероятность перехода в &lt;br&gt;каждый непосещенный город по формуле" style="html=1;dashed=0;whitespace=wrap;shape=partialRectangle;right=0;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="1130" y="1100" width="30" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="196" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;dashed=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="195" target="192" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1070" y="1140" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="201" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;" parent="1" source="197" target="198" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="197" value="chosen_place =&amp;nbsp;&lt;br&gt;&lt;span style=&quot;text-align: left&quot;&gt;choose_next_place(pk)&lt;/span&gt;&amp;nbsp;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" parent="1" vertex="1">
+                    <mxGeometry x="860" y="1200" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="202" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=none;endFill=0;" parent="1" source="198" target="199" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="198" value="Добавить выбранный город&lt;br&gt;в массив посещенных городов&lt;br&gt;для текущего муравья" style="html=1;dashed=0;whitespace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="860" y="1290" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="219" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;" parent="1" source="199" target="206" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="199" value="Цикл пока массив посещенных городов (visited) не заполнен&amp;nbsp;" style="shape=loopLimit;whiteSpace=wrap;html=1;strokeWidth=1;direction=west;" parent="1" vertex="1">
+                    <mxGeometry x="860" y="1380" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="204" value="choose_next_place(pk)&lt;br&gt;&lt;br&gt;Рандомно выбирает, в какой город&lt;br&gt;будет совершен переход" style="html=1;dashed=0;whitespace=wrap;shape=partialRectangle;right=0;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="1130" y="1190" width="30" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="205" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;dashed=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="204" target="197" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1070" y="1230" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="218" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;" parent="1" source="206" target="207" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="206" value="Добавить первый город из массива&lt;br&gt;посещенных городов в маршрут&lt;br&gt;(visited)" style="html=1;dashed=0;whitespace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="860" y="1470" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="217" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;" parent="1" source="207" target="213" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="207" value="cur_length = calc_length(matrix, visited[ant])" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" parent="1" vertex="1">
+                    <mxGeometry x="860" y="1560" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="223" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;" parent="1" source="208" target="220" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="208" value="ant += 1" style="shape=loopLimit;whiteSpace=wrap;html=1;strokeWidth=1;direction=west;" parent="1" vertex="1">
+                    <mxGeometry x="860" y="1920" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="210" value="Конец" style="html=1;dashed=0;whitespace=wrap;shape=mxgraph.dfd.start" parent="1" vertex="1">
+                    <mxGeometry x="860" y="2190" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="211" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;endArrow=classic;endFill=1;" parent="1" source="213" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1120" y="1740" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="212" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;endArrow=none;endFill=0;rounded=0;" parent="1" source="213" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="960" y="1850" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="800" y="1680"/>
+                            <mxPoint x="800" y="1850"/>
+                            <mxPoint x="960" y="1850"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="213" value="cur_length &amp;lt; min_length" style="shape=rhombus;html=1;dashed=0;whitespace=wrap;perimeter=rhombusPerimeter;" parent="1" vertex="1">
+                    <mxGeometry x="860" y="1650" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="214" value="Да" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="1045" y="1650" width="30" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="215" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;endArrow=classic;endFill=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="216" target="208" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="960" y="1850" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="1120" y="1850"/>
+                            <mxPoint x="960" y="1850"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="216" value="min_length = cur_dist&lt;br&gt;best_way =&amp;nbsp; visited[ant]" style="html=1;dashed=0;whitespace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="1020" y="1740" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="224" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=none;endFill=0;" parent="1" source="220" target="222" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="220" value="Обновить матрицу феромонов" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" parent="1" vertex="1">
+                    <mxGeometry x="860" y="2010" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="225" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;endArrow=none;endFill=0;entryX=0.5;entryY=0.5;entryDx=0;entryDy=-30;entryPerimeter=0;" parent="1" source="222" target="210" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="960" y="2180" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="222" value="day += 1" style="shape=loopLimit;whiteSpace=wrap;html=1;strokeWidth=1;direction=west;" parent="1" vertex="1">
+                    <mxGeometry x="860" y="2100" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="226" value="choose_next_place(pk)&lt;br&gt;&lt;br&gt;Рандомно выбирает, в какой город&lt;br&gt;будет совершен переход" style="html=1;dashed=0;whitespace=wrap;shape=partialRectangle;right=0;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="1130" y="2000" width="30" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="227" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;dashed=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="226" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1060" y="2040" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="228" value="calc_length(matrix, visited[ant]&lt;br&gt;&lt;br&gt;Суммарная длина пути" style="html=1;dashed=0;whitespace=wrap;shape=partialRectangle;right=0;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="1130" y="1550" width="30" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="229" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;dashed=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="228" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1060" y="1590" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="230" value="A" style="shape=ellipse;html=1;dashed=0;whitespace=wrap;aspect=fixed;perimeter=ellipsePerimeter;" vertex="1" parent="1">
+                    <mxGeometry x="935" y="940" width="50" height="50" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

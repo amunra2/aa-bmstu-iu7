@@ -1,125 +1,122 @@
 \chapter{Технологическая часть}
 
-В данном разделе будут рассмотрены средства реализации, а также представлены листинги линейной и конвейрной орбаботок матрицы.
+В данном разделе будут рассмотрены средства реализации, а также представлены листинги алгоритма полного перебора путей и муравьиного алгоритма.
 
 \section{Средства реализации}
-В данной работе для реализации был выбран язык программирования $C++$ \cite{cpp-lang}. В текущей лабораторной работе требуется замерить процессорное время для выполняемой программы, а также реализовать принципы многопоточного алгоритма. Все эти инструменты присутствуют в выбранном языке программирования. 
+В данной работе для реализации был выбран язык программирования $Python \cite{python-lang}$. В текущей лабораторной работе требуется замерить процессорное время для выполняемой программы, а также построить графики. Все эти инструменты присутствуют в выбранном языке программирования.
 
-Функции построения графиков были реализованы с использованием языка программирования $Python$ \cite{python-lang}.
-
-Время замерено с помощью \textit{std::chrono::system\_clock::now(...)} - функции из библиотеки $chrono$ \cite{cpp-lang-chrono}.
+Время работы было замерено с помощью функции \textit{process\_time(...)} из библиотеки $time \cite{python-lang-time}$.
 
 
 \section{Листинги кода}
 
-В листинге \ref{lst:bres_alg} представлены реализация алгоритма Брезенехема для построения отрезка, а в листингах \ref{lst:par_alg}-\ref{lst:no_par_alg} - алгоритмы для построения спектра отрезков по Брезенехему с многопоточностью и без нее соответственно.
+В листинге \ref{lst:full_comb} представлен алгоритм полного перебора путей, а в листингах \ref{lst:ant_alg}-\ref{lst:upd_pher} - муравьиный алгоритм и дополнительные к нему функции.
 
 \clearpage
 
 \begin{center}
     \captionsetup{justification=raggedright,singlelinecheck=off}
-    \begin{lstlisting}[label=lst:bres_alg,caption=Алгоритм линейной обработки матрицы]
-void parse_linear(int count, size_t size, bool is_print)
-{
-	time_now = 0;
+    \begin{lstlisting}[label=lst:full_comb,caption=Алгоритм полного перебора путей]
+def full_combinations(matrix, size):
+	places = np.arange(size)
+	places_combs = list()
 
-	std::queue<matrix_t> q1;
-	std::queue<matrix_t> q2;
-	std::queue<matrix_t> q3;
+	for combination in it.permutations(places):
+		comb_arr = list(combination)
 
-	queues_t queues = {.q1 = q1, .q2 = q2, .q3 = q3};
+		places_combs.append(comb_arr)
 
-	for (int i = 0; i < count; i++)
-	{
-		matrix_t res = generate_matrix(size);
+	min_dist = float("inf")
+
+	for i in range(len(places_combs)):
+		places_combs[i].append(places_combs[i][0])
+
+		cur_dist = 0
+
+		for j in range(size):
+			start_city = places_combs[i][j]
+			end_city = places_combs[i][j + 1]
+
+			cur_dist += matrix[start_city][end_city]
+
+		if (cur_dist < min_dist):
+			min_dist = cur_dist
+
+			best_way = places_combs[i]
+
+	return min_dist, best_way
+\end{lstlisting}
+\end{center}
+
+\clearpage
+
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{lstlisting}[label=lst:ant_alg,caption=Муравьиный алгоритм]
+def ant_algorythm(matrix, places, alpha, beta, k_evaporation, days):
+	q = calc_q(matrix, places)
+
+	best_way = []
+	min_length = float("inf")
+
+	pheromones = get_pheromones(places)
+	visibility = get_visibility(matrix, places)
+
+	ants = places
+
+	for day in range(days):
+		route = np.arange(places)
+
+		visited = get_visited_places(route, ants)
+
+		for ant in range(ants):
+			while (len(visited[ant]) != ants):
+				pk = find_posibilyties(pheromones, visibility, visited, places, ant, alpha, beta)  
+
+				chosen_place = choose_next_place_by_posibility(pk)
+
+				visited[ant].append(chosen_place - 1)
 		
-		queues.q1.push(res);
-	}
+			visited[ant].append(visited[ant][0])
 
-	for (int i = 0; i < count; i++)
-	{
-		matrix_t matrix = queues.q1.front();
-		stage1_linear(matrix, i + 1, is_print);
-		queues.q1.pop();
-		queues.q2.push(matrix);
+			cur_length = calc_length(matrix, visited[ant]) 
 
-		matrix = queues.q2.front();
-		stage2_linear(matrix, i + 1, is_print); // Stage 2
-		queues.q2.pop();
-		queues.q3.push(matrix);
+			if (cur_length < min_length):
+				min_length = cur_length
+				best_way = visited[ant]
 
-		matrix = queues.q3.front();
-		stage3_linear(matrix, i + 1, is_print); // Stage 3
-		queues.q3.pop();
-	}
-}
+		pheromones = update_pheromones(matrix, places, visited, pheromones, q, k_evaporation)
+
+	return min_length, best_way
 \end{lstlisting}
 \end{center}
 
+
 \clearpage
+
 
 \begin{center}
     \captionsetup{justification=raggedright,singlelinecheck=off}
-    \begin{lstlisting}[label=lst:par_alg,caption=Алгоритм конвейерной обработки матрицы]
-void parse_parallel(int count, size_t size, bool is_print)
-{
-	time_now = 0;
+    \begin{lstlisting}[label=lst:prob_arr,caption=Алгоритм нахождения массива вероятностных переходов в непосещенные города]
+def find_posibilyties(pheromones, visibility, visited, places, ant, alpha, beta):
+	pk = [0] * places
 
-	std::queue<matrix_t> q1;
-	std::queue<matrix_t> q2;
-	std::queue<matrix_t> q3;
+	for place in range(places):
+		if place not in visited[ant]:
+			ant_place = visited[ant][-1]
 
-	queues_t queues = {.q1 = q1, .q2 = q2, .q3 = q3};
-
-	
-	for (int i = 0; i < count; i++)
-	{
-		matrix_t res = generate_matrix(size);
+			pk[place] = pow(pheromones[ant_place][place], alpha) * \
+				pow(visibility[ant_place][place], beta)
 		
-		q1.push(res);
-	}
+		else:
+			pk[place] = 0
 
-	std::thread threads[THREADS];
+	sum_pk = sum(pk)
 
-	threads[0] = std::thread(stage1_parallel, std::ref(q1), std::ref(q2), std::ref(q3), is_print);
-	threads[1] = std::thread(stage2_parallel, std::ref(q1), std::ref(q2), std::ref(q3), is_print);
-	threads[2] = std::thread(stage3_parallel, std::ref(q1), std::ref(q2), std::ref(q3), is_print);
+	for place in range(places):
+		pk[place] /= sum_pk  
 
-	for (int i = 0; i < THREADS; i++)
-	{
-		threads[i].join();
-	}
-}
-\end{lstlisting}
-\end{center}
-
-
-\clearpage
-
-
-\begin{center}
-    \captionsetup{justification=raggedright,singlelinecheck=off}
-    \begin{lstlisting}[label=lst:no_par_alg,caption=Алгоритм запуска 1 потока для нахождения среднего арифметического элементов матрицы]
-void stage1_parallel(std::queue<matrix_t> &q1, std::queue<matrix_t> &q2, std::queue<matrix_t> &q3, bool is_print)
-{
-	int task_num = 1;
-
-	std::mutex m;
-
-	while(!q1.empty())
-	{      
-		m.lock();
-		matrix_t matrix = q1.front();
-		m.unlock();
-
-		log(matrix, task_num++, 1, get_avg, is_print);
-
-		m.lock();
-		q2.push(matrix);
-		q1.pop();
-		m.unlock();
-	}
-}
+	return pk
 \end{lstlisting}
 \end{center}
 
@@ -127,76 +124,50 @@ void stage1_parallel(std::queue<matrix_t> &q1, std::queue<matrix_t> &q2, std::qu
 
 \begin{center}
     \captionsetup{justification=raggedright,singlelinecheck=off}
-    \begin{lstlisting}[label=lst:no_par_alg,caption=Алгоритм запуска 2 потока для нахождения максимального элемента матрицы]
-void stage2_parallel(std::queue<matrix_t> &q1, std::queue<matrix_t> &q2, std::queue<matrix_t> &q3, bool is_print)
-{
-	int task_num = 1;
+    \begin{lstlisting}[label=lst:choose_next,caption=Алгоритм нахождения следующего города на основании рандома]
+def choose_next_place_by_posibility(pk):
+	posibility = random()
+	choice = 0
+	chosen_place = 0
 
-	std::mutex m;
+	while ((choice < posibility) and (chosen_place < len(pk))):
+		choice += pk[chosen_place]
+		chosen_place += 1
 
-	do
-	{   
-		m.lock();
-		bool is_q2empty = q2.empty();
-		m.unlock();
-
-		if (!is_q2empty)
-		{   
-			m.lock();
-			matrix_t matrix = q2.front();
-			m.unlock();
-
-			log(matrix, task_num++, 2, get_max, is_print);
-
-			m.lock();
-			q3.push(matrix);
-			q2.pop();
-			m.unlock();
-		}
-	} while (!q1.empty() || !q2.empty());
-}
+	return chosen_place
 \end{lstlisting}
 \end{center}
 
-\clearpage
 
 \begin{center}
     \captionsetup{justification=raggedright,singlelinecheck=off}
-    \begin{lstlisting}[label=lst:no_par_alg,caption=Алгоритм запуска 3 потока для заполнения матрицы вычисленными значениями]
-void stage3_parallel(std::queue<matrix_t> &q1, std::queue<matrix_t> &q2, std::queue<matrix_t> &q3, bool is_print)
-{
-	int task_num = 1;
+    \begin{lstlisting}[label=lst:upd_pher,caption=Алгоритм обновления матрицы феромонов]
+def update_pheromones(matrix, places, visited, pheromones, q, k_evaporation):
+	ants = places
 
-	std::mutex m;
+	for i in range(places):
+		for j in range(places):
+			delta_pheromones = 0
 
-	do
-	{
-		m.lock();
-		bool is_q3empty = q3.empty();
-		m.unlock();
+			for ant in range(ants):
+				length = calc_length(matrix, visited[ant])
+				delta_pheromones += q / length
 
-		if (!is_q3empty)
-		{
-			m.lock();
-            matrix_t matrix = q3.front(); 
-            q3.pop();
-            m.unlock();
+			pheromones[i][j] *= (1 - k_evaporation)
+			pheromones[i][j] += delta_pheromones
 
-			log(matrix, task_num++, 3, fill_matrix, is_print);
-		}
+			if (pheromones[i][j] < MIN_PHEROMONE):
+				pheromones[i][j] = MIN_PHEROMONE
 
-	} while (!q1.empty() || !q2.empty() || !q3.empty());
-}
+	return pheromones
 \end{lstlisting}
 \end{center}
 
 \section{Сведения о модулях программы}
 Программа состоит из двух модулей:
 \begin{itemize}
-	\item \textit{main.cpp} - файл, содержащий меню программы;
-    \item \textit{matrix.h} и \textit{matrix.cpp} - файлы, содержащие код работы с матрицей (генерация, печать и алгоритмы обработки матрицы);
-	\item \textit{conveyor.h} и \textit{conveyor.cpp} - файлы, содержащие код реализации линейной и конвейерной обработок, а также функции замера времени;
-	\item \textit{graph\_build.py} - файл, содержащий функции построения графиков для замеров по времени.
+	\item \textit{main.py} - файл, содержащий меню программы, а также весь служебный код;
+    \item \textit{algorythms.py} - файл, содержащий реализацию алгоритма полного перебора и муравьиного алгоритма.
 \end{itemize}
 
 
@@ -204,30 +175,42 @@ void stage3_parallel(std::queue<matrix_t> &q1, std::queue<matrix_t> &q2, std::qu
 
 В таблице \ref{tbl:functional_test} приведены тесты для функций программы. Тесты \textit{для всех функций} пройдены успешно.
 
-\begin{table}[h]
-	\begin{center}
-        \begin{threeparttable}
-        \captionsetup{justification=raggedright,singlelinecheck=off}
-		\caption{\label{tbl:functional_test} Функциональные тесты}
-		\begin{tabular}{|c|c|c|c|}
-			\hline
-			Алгоритм & Кол-во матриц & Размер матриц & Ожидаемый результат \\
-			\hline
-            Конвейрная & -5 & 500 & Сообщение об ошибке \\
-            \hline
-            Конвейрная & 10 & -23 & Сообщение об ошибке \\
-            \hline
-			Линейная & 50 & 1500 & Вывод лога работы программы \\
-            \hline
-			Конвейрная & 10 & 100 & Вывод лога работы программы \\
-			\hline
-			Конвейрная & 5 & 10 & Вывод лога работы программы \\
-			\hline
-		\end{tabular}
-        \end{threeparttable}
-	\end{center}
-\end{table}
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{longtable}[c]{|c|c|c|c|c|}
+    \caption{Функциональные тесты\label{tbl:functional_test}} \\ \hline
+		Матрица смежности & Ожидаемый результат & Результат программы \\
+		\hline
+		$ \begin{pmatrix}
+			0 &  4 &  2 &  1 & 7 \\
+			4 &  0 &  3 &  7 & 2 \\
+			2 &  3 &  0 & 10 & 3 \\
+			1 &  7 & 10 &  0 & 9 \\
+			7 &  2 &  3 &  9 & 0
+		\end{pmatrix}$ &
+		15, [0, 2, 4, 1, 3, 0] &
+		15, [0, 2, 4, 1, 3, 0] \\
+
+		$ \begin{pmatrix}
+			0 & 1 & 2 \\
+			1 & 0 & 1 \\
+			2 & 1 & 0	
+		\end{pmatrix}$ &
+		4, [0, 1, 2, 0] &
+		4, [0, 1, 2, 0] \\
+
+		$ \begin{pmatrix}
+			0 & 15 & 19 & 20 \\
+			15 &  0 & 12 & 13 \\
+			19 & 12 &  0 & 17 \\
+			20 & 13 & 17 &  0
+		\end{pmatrix}$ &
+		64, [0, 1, 2, 3, 0] &
+		64, [0, 1, 2, 3, 0] \\
+		\hline
+	\end{longtable}
+\end{center}
 
 \section{Вывод}
 
-Были представлены листинги всех алгоритмов линейной и конвейерной обработки матриц. Также в данном разделе была приведена информации о выбранных средствах для разработки алгоритмов и сведения о модулях программы, проведено функциональное тестирование.
+Были представлены листинги всех алгоритмов -- полного перебора и муравьиного. Также в данном разделе была приведена информации о выбранных средствах для разработки алгоритмов и сведения о модулях программы, проведено функциональное тестирование.
