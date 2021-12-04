@@ -13,7 +13,7 @@ from algorythms import full_combinations, ant_algorythm
 
 
 # Text
-MSG = "\n\n      Задача коммивояжера \n\n \
+MSG = "\n\n      Словари \n\n \
     1. Полный перебор \n \
     2. Муравьиный алгоритм \n \
     3. Все алгоритмы \n\n \
