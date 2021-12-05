@@ -1,0 +1,164 @@
+\chapter{Технологическая часть}
+
+В данном разделе будут рассмотрены средства реализации, а также представлены листинги алгоритма поиска полным перебором, бинарного алгоритма поимска и алгоритма поиска с использованием сегментации.
+
+\section{Средства реализации}
+В данной работе для реализации был выбран язык программирования $Python \cite{python-lang}$. В текущей лабораторной работе требуется замерить процессорное время для выполняемой программы, а также построить графики. Все эти инструменты присутствуют в выбранном языке программирования.
+
+Время работы было замерено с помощью функции \textit{process\_time(...)} из библиотеки $time \cite{python-lang-time}$.
+
+
+\section{Листинги кода}
+
+В листинге \ref{lst:full_search} представлен алгоритм поиска полного перебора в словаре, а в листинге \ref{lst:bin_search} -- алгоритм бинарного поиска. Также в листинге \ref{lst:make_segm} представлен алгоритм разбиения словаря на сегменты по общему признаку -- 
+ключи, начинающиеся на одну букву, а в листинге \ref{lst:segm_search} -- поиск в словаре сегментами.
+
+\clearpage
+
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{lstlisting}[label=lst:full_search,caption=Алгоритм поиска в словаре полным перебором]
+def full_search(data_dict, key, output = True):
+	count = 0 # count of comparsions
+
+	keys = data_dict.keys()
+
+	for elem in keys:
+		count += 1
+
+		if (elem == key):
+			if (output):
+				record = [key, data_dict[key]]
+				print("\n\nSearch result:\n")
+						
+				print_record(record)
+				
+			return count
+
+	return -1
+\end{lstlisting}
+\end{center}
+
+\clearpage
+
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{lstlisting}[label=lst:bin_search,caption=Алгоритм бинарного поиска]
+def binary_search(sorted_dict, key, output = True):
+	count = 0 # count of comparsions
+
+	keys = list(sorted_dict.keys())
+
+	left = 0 
+	right = len(keys)
+
+	while (left <= right):
+		count += 1
+		middle = (left + right) // 2
+		elem = keys[middle]
+
+		if (elem == key):
+			if (output):
+				record = [key, sorted_dict[key]]
+				print("\n\nSearch result:\n")     
+				print_record(record)
+				
+			return count
+
+		if (elem < key):
+			left = middle + 1
+		else:
+			right = middle - 1
+
+	return -1
+\end{lstlisting}
+\end{center}
+
+
+\clearpage
+
+
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{lstlisting}[label=lst:make_segm,caption=Алгоритм разбиения словаря на сегменты, объединенные общим признаком (начинаются на одну букву)]
+def make_segments(self):
+	temp_dict = {i: 0 for i in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"}
+
+	for key in self.data_dict:
+		temp_dict[key[FIRST_LETTER]] += 1
+
+	temp_dict = self.sort_value(temp_dict)
+
+	segmented_dict = {i: dict() for i in temp_dict}
+
+	for key in self.data_dict:
+		segmented_dict[key[0]].update({key: self.data_dict[key]})
+
+	return segmented_dict
+\end{lstlisting}
+\end{center}
+
+
+\clearpage
+
+
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{lstlisting}[label=lst:segm_search,caption=Алгоритм поиска в словаре с использованием сегментации]
+def segment_search(segmented_dict, key, output = True):
+	count = 0
+
+	keys = list(segmented_dict.keys())
+
+	for key_letter in keys:
+		count += 1
+
+		if (key[FIRST_LETTER] == key_letter):
+			count_search = 0
+
+			for elem in segmented_dict[key_letter]:
+				count_search += 1
+
+				if (elem == key):
+					if (output):
+						record = [key, segmented_dict[key_letter][key]]
+						print("\n\nSearch result:\n")     
+						print_record(record)
+
+					return count_search + count
+
+			return -1
+
+	return -1
+\end{lstlisting}
+\end{center}
+
+
+\section{Сведения о модулях программы}
+Программа состоит из двух модулей:
+\begin{itemize}
+	\item \textit{main.py} - файл, содержащий меню программы, а также весь служебный код;
+    \item \textit{dictionary.py} - файл, содержащий реализацию класса \textit{Dictionary}, в котором содержатся методы для работы со словарем, а также алгоритмы поиска -- полным переобором, бинарный, сегментами.
+\end{itemize}
+
+
+\section{Функциональные тесты}
+
+В таблице \ref{tbl:functional_test} приведены тесты для функций программы. Тесты \textit{для всех функций} пройдены успешно.
+
+\begin{center}
+    \captionsetup{justification=raggedright,singlelinecheck=off}
+    \begin{longtable}[c]{|c|c|c|c|c|}
+    \caption{Функциональные тесты\label{tbl:functional_test}} \\ \hline
+		\textbf{Ключ} & \textbf{Результат} & \textbf{Пояснение} \\ \hline
+		Noname & Нет такого ключа & Несуществующий ключ \\ \hline
+		Messi & Информация и кол-во сравнений & Первый ключ \\ \hline
+		Bonifazi & Информация и кол-во сравнений & Крайний ключ \\ \hline
+		Golovin & Информация и кол-во сравнений & Ключ в словаре \\
+		\hline
+	\end{longtable}
+\end{center}
+
+\section{Вывод}
+
+Были представлены листинги всех алгоритмов -- полного перебора, бинарного поиска, сегментного поиска. Также в данном разделе была приведена информации о выбранных средствах для разработки алгоритмов и сведения о модулях программы, проведено функциональное тестирование.
