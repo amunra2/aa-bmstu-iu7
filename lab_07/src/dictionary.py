@@ -174,7 +174,9 @@ class Dictionary(object):
     def segment_search(self, key, segmented_dict, output = True):
         count = 0
 
-        for key_letter in segmented_dict:
+        keys = list(segmented_dict.keys())
+
+        for key_letter in keys:
             count += 1
 
             if (key[FIRST_LETTER] == key_letter):
@@ -192,6 +194,8 @@ class Dictionary(object):
                         return count_search + count
 
                 return -1
+
+        return -1
 
 
     def parse_segment_search(self, key, output = True):
