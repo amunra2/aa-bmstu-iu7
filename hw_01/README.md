@@ -15,7 +15,7 @@
 
 ## Ссылки
 
-[Отчет](./docs/report/cvetkov_report.pdf)
+[Отчет](./docs/report/cvetkov53b_report.pdf)
 
 [Код](./src/main.py)
 
