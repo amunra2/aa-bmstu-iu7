@@ -16,9 +16,9 @@
 
 ## Запуск
 
-1. Установить пакеты `python3`, `python-pip3`
+0. Установить пакеты `python3`, `python-pip3`
 
-2. Перейти в папку с исходным кодом
+1. Перейти в папку с исходным кодом
    
 ```bash
 cd ./src
@@ -30,7 +30,7 @@ cd ./src
 pip install -r requirements.txt
 ```
 
-2. Запустить
+3. Запустить
    
 ```bash
 python3 main.py
