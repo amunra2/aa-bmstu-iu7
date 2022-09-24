@@ -12,8 +12,6 @@
 
 #include <iostream>
 
-#include "timer.h"
-
 
 #define WIN_X 709
 #define WIN_Y 709
