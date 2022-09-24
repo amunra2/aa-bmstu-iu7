@@ -38,3 +38,5 @@ _Операционный граф_
 _Операционная история_
 
 <img src="./docs/materials/svg/hw_01-oper_his.drawio.svg" alt="Операционная история"/>
+
+_@amunra2 (2021г.)_
